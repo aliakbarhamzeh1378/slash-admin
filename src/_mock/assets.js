@@ -80,35 +80,16 @@ const DASHBOARD_PERMISSION = {
 	type: PermissionType.CATALOGUE,
 	route: "dashboard",
 	order: 1,
-	children: [
-		{
-			id: "8426999229400979",
-			parentId: "9100714781927703",
-			label: "sys.menu.workbench",
-			name: "Workbench",
-			type: PermissionType.MENU,
-			route: "workbench",
-			component: "/dashboard/workbench/index.tsx",
-		},
-		{
-			id: "9710971640510357",
-			parentId: "9100714781927703",
-			label: "sys.menu.analysis",
-			name: "Analysis",
-			type: PermissionType.MENU,
-			route: "analysis",
-			component: "/dashboard/analysis/index.tsx",
-		},
-	],
+	children: [],
 };
 const MANAGEMENT_PERMISSION = {
 	id: "0901673425580518",
 	parentId: "",
 	label: "sys.menu.management",
-	name: "Management",
-	icon: "ic-management",
+	name: "Analysis",
+	icon: "ic-analysis",
 	type: PermissionType.CATALOGUE,
-	route: "management",
+	route: "analysis",
 	order: 2,
 	children: [
 		{

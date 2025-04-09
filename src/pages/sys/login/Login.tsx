@@ -1,5 +1,4 @@
-import { Layout, Typography } from "antd";
-import { useTranslation } from "react-i18next";
+import { Layout } from "antd";
 import { Navigate } from "react-router";
 
 import DashboardImg from "@/assets/images/background/dashboard.png";
@@ -20,7 +19,6 @@ import { LoginStateProvider } from "./providers/LoginStateProvider";
 const { VITE_APP_HOMEPAGE: HOMEPAGE } = import.meta.env;
 
 function Login() {
-	const { t } = useTranslation();
 	const token = useUserToken();
 
 	// 判断用户是否有权限
@@ -40,11 +38,8 @@ function Login() {
 					background: bg,
 				}}
 			>
-				<div className="text-3xl font-bold leading-normal lg:text-4xl xl:text-5xl">Slash Admin</div>
+				<div className="text-3xl font-bold leading-normal lg:text-4xl xl:text-5xl">Perche AI Admin</div>
 				<img className="max-w-[480px] xl:max-w-[560px]" src={DashboardImg} alt="" />
-				<Typography.Text className="flex flex-row gap-[16px] text-2xl">
-					{t("sys.login.signInSecondTitle")}
-				</Typography.Text>
 			</div>
 
 			<div className="m-auto flex !h-screen w-full max-w-[480px] flex-col justify-center px-[16px] lg:px-[64px]">
