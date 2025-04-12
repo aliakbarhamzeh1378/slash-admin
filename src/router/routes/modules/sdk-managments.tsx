@@ -1,12 +1,12 @@
-import { Suspense } from "react";
-import { Outlet } from "react-router";
+import { lazy, Suspense } from "react";
+import { Navigate, Outlet } from "react-router";
 
 import { SvgIcon } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-// const ProfilePage = lazy(() => import("@/pages/sdk_management/user/profile"));
+const ProfilePage = lazy(() => import("@/pages/sdk_management/user/profile"));
 // const AccountPage = lazy(() => import("@/pages/sdk_management/user/account"));
 
 // const OrganizationPage = lazy(() => import("@/pages/sdk_management/system/organization"));
@@ -23,10 +23,27 @@ const sdk_management: AppRouteObject = {
 		</Suspense>
 	),
 	meta: {
-		label: "sys.menu.sdk_management",
+		label: "sys.menu.sdk_management.index",
 		icon: <SvgIcon icon="ic-user" className="ant-menu-item-icon" size="24" />,
 		key: "/sdk_management",
 	},
+
+	children: [
+		{
+			index: true,
+			element: <Navigate to="index" replace />,
+		},
+		{
+			path: "index",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.sdk_management.index", key: "/sdk_management/index" },
+		},
+		{
+			path: "setup",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.sdk_management.setup", key: "/sdk_management/setup" },
+		},
+	],
 	// children: [
 	// 	{
 	// 		index: true,

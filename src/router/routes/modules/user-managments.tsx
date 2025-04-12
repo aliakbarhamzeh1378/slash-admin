@@ -6,7 +6,6 @@ import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-// const ProfilePage = lazy(() => import("@/pages/user_management/user/profile"));
 // const AccountPage = lazy(() => import("@/pages/user_management/user/account"));
 
 // const OrganizationPage = lazy(() => import("@/pages/user_management/system/organization"));
@@ -23,7 +22,7 @@ const user_management: AppRouteObject = {
 		</Suspense>
 	),
 	meta: {
-		label: "sys.menu.user_management",
+		label: "sys.menu.user_management.index",
 		icon: <SvgIcon icon="ic-user" className="ant-menu-item-icon" size="24" />,
 		key: "/user_management",
 	},

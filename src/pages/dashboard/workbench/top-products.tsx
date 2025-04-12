@@ -13,7 +13,7 @@ interface DataType {
 	status: string;
 }
 
-export default function NewInvoice() {
+export default function TopProducts() {
 	const columns: ColumnsType<DataType> = [
 		{
 			title: "InvoiceId",
@@ -98,7 +98,7 @@ export default function NewInvoice() {
 	return (
 		<Card className="flex-col">
 			<header className="self-start">
-				<Typography.Title level={5}>New Invoice</Typography.Title>
+				<Typography.Title level={5}>Top Products</Typography.Title>
 			</header>
 			<main className="w-full">
 				<Scrollbar>

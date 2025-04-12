@@ -1,12 +1,12 @@
-import { Suspense } from "react";
-import { Outlet } from "react-router";
+import { lazy, Suspense } from "react";
+import { Navigate, Outlet } from "react-router";
 
 import { SvgIcon } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-// const ProfilePage = lazy(() => import("@/pages/website_management/user/profile"));
+const ProfilePage = lazy(() => import("@/pages/website_management/user/profile"));
 // const AccountPage = lazy(() => import("@/pages/website_management/user/account"));
 
 // const OrganizationPage = lazy(() => import("@/pages/website_management/system/organization"));
@@ -23,10 +23,37 @@ const website_management: AppRouteObject = {
 		</Suspense>
 	),
 	meta: {
-		label: "sys.menu.website_management",
+		label: "sys.menu.website_management.index",
 		icon: <SvgIcon icon="ic-user" className="ant-menu-item-icon" size="24" />,
 		key: "/website_management",
 	},
+
+	children: [
+		{
+			index: true,
+			element: <Navigate to="index" replace />,
+		},
+		{
+			path: "index",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.website_management.user", key: "/website_management" },
+		},
+		{
+			path: "setup",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.website_management.setup", key: "/website_management/setup" },
+		},
+		{
+			path: "llm",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.website_management.llm", key: "/website_management/llm" },
+		},
+		{
+			path: "export",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.website_management.export", key: "/website_management/export" },
+		},
+	],
 	// children: [
 	// 	{
 	// 		index: true,

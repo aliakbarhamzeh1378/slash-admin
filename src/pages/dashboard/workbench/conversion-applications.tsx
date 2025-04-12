@@ -7,13 +7,14 @@ export function Conversion() {
 		<Basic
 			percent={48}
 			title="38,566"
-			subtitle="Conversion"
+			subtitle="Today messages"
 			iconify="tabler:user-filled"
 			bg={themeVars.colors.palette.primary.default}
 			strokeColor={themeVars.colors.palette.primary.light}
 		/>
 	);
 }
+
 export function Applications() {
 	return (
 		<Basic
@@ -27,7 +28,7 @@ export function Applications() {
 	);
 }
 
-type Props = {
+type BasicProps = {
 	percent: number;
 	title: string;
 	subtitle: string;
@@ -35,8 +36,10 @@ type Props = {
 	bg?: string;
 	strokeColor?: string;
 };
-function Basic({ percent, title, subtitle, iconify, bg, strokeColor }: Props) {
+
+function Basic({ percent, title, subtitle, iconify, bg, strokeColor }: BasicProps) {
 	const format = (val?: number) => <span style={{ color: themeVars.colors.background.default }}>{val}%</span>;
+
 	return (
 		<div
 			className="relative flex items-center rounded-2xl p-6"

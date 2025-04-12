@@ -3,26 +3,36 @@ import useChart from "@/components/chart/useChart";
 
 const series = [
 	{
-		name: "Team A",
-		type: "column",
-		data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
-	},
-	{
-		name: "Team B",
-		type: "area",
-		data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
-	},
-	{
-		name: "Team C",
 		type: "line",
-		data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
+		name: "Product Deep Dive",
+		data: [450, 520, 580, 620, 680, 750, 820, 890, 950, 1020, 1080, 1150],
+	},
+	{
+		type: "line",
+		name: "Product Search",
+		data: [320, 380, 420, 480, 540, 600, 660, 720, 780, 840, 900, 960],
+	},
+	{
+		type: "line",
+		name: "Product Discovery",
+		data: [280, 340, 400, 460, 520, 580, 640, 700, 760, 820, 880, 940],
+	},
+	{
+		type: "line",
+		name: "Question About Store",
+		data: [150, 180, 210, 240, 270, 300, 330, 360, 390, 420, 450, 480],
+	},
+	{
+		type: "line",
+		name: "Normal Conversation",
+		data: [200, 240, 280, 320, 360, 400, 440, 480, 520, 560, 600, 640],
 	},
 ];
 
-export default function ChartMixed() {
+export default function IntentUsageArea() {
 	const chartOptions = useChart({
 		stroke: {
-			width: [0, 2, 3],
+			width: [1, 1, 1, 1, 1],
 		},
 		plotOptions: {
 			bar: { columnWidth: "20%" },
@@ -64,7 +74,5 @@ export default function ChartMixed() {
 		},
 	});
 
-	return (
-		<Chart type="line" series={series} options={chartOptions} height={320} />
-	);
+	return <Chart type="line" series={series} options={chartOptions} height={320} />;
 }

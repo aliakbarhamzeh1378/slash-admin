@@ -4,23 +4,23 @@ import Card from "@/components/card";
 import Chart from "@/components/chart/chart";
 import useChart from "@/components/chart/useChart";
 
-export default function CurrentDownload() {
+export default function IntentUsage() {
 	return (
 		<Card className="flex-col">
 			<header className="self-start">
-				<Typography.Title level={5}>Current Download</Typography.Title>
+				<Typography.Title level={5}>Today Intent Usage</Typography.Title>
 			</header>
 			<main>
-				<ChartDonut />
+				<ChartDonutChart />
 			</main>
 		</Card>
 	);
 }
 
-const series = [44, 55, 13, 43];
-function ChartDonut() {
+const series = [44, 55, 13, 43, 22];
+function ChartDonutChart() {
 	const chartOptions = useChart({
-		labels: ["Mac", "Window", "IOS", "Android"],
+		labels: ["Product Deep Dive", "Product Search", "Product Discovery", "Question About Store", "Normal Conversation"],
 		stroke: {
 			show: false,
 		},
@@ -48,11 +48,10 @@ function ChartDonut() {
 						},
 					},
 				},
+				expandOnClick: false,
 			},
 		},
 	});
 
-	return (
-		<Chart type="donut" series={series} options={chartOptions} height={360} />
-	);
+	return <Chart type="donut" series={series} options={chartOptions} height={360} />;
 }

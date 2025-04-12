@@ -1,32 +1,59 @@
-import { Suspense } from "react";
-import { Outlet } from "react-router";
+import { lazy, Suspense } from "react";
+import { Navigate, Outlet } from "react-router";
 
 import { SvgIcon } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-// const ProfilePage = lazy(() => import("@/pages/suport/user/profile"));
-// const AccountPage = lazy(() => import("@/pages/suport/user/account"));
+const ProfilePage = lazy(() => import("@/pages/support/user/profile"));
+// const AccountPage = lazy(() => import("@/pages/support/user/account"));
 
-// const OrganizationPage = lazy(() => import("@/pages/suport/system/organization"));
-// const PermissioPage = lazy(() => import("@/pages/suport/system/permission"));
+// const OrganizationPage = lazy(() => import("@/pages/support/system/organization"));
+// const PermissioPage = lazy(() => import("@/pages/support/system/permission"));
 
-// const Blog = lazy(() => import("@/pages/suport/blog"));
+// const Blog = lazy(() => import("@/pages/support/blog"));
 
-const suport: AppRouteObject = {
+const support: AppRouteObject = {
 	order: 2,
-	path: "suport",
+	path: "support",
 	element: (
 		<Suspense fallback={<CircleLoading />}>
 			<Outlet />
 		</Suspense>
 	),
 	meta: {
-		label: "sys.menu.suport",
+		label: "sys.menu.support",
 		icon: <SvgIcon icon="ic-user" className="ant-menu-item-icon" size="24" />,
-		key: "/suport",
+		key: "/support",
 	},
+
+	children: [
+		{
+			index: true,
+			element: <Navigate to="index" replace />,
+		},
+		{
+			path: "index",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.support.index", key: "/support/index" },
+		},
+		{
+			path: "setup",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.support.faq", key: "/support/faq/" },
+		},
+		{
+			path: "setup",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.support.guide", key: "/support/guide/" },
+		},
+		{
+			path: "setup",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.support.contact", key: "/support/contact/" },
+		},
+	],
 	// children: [
 	// 	{
 	// 		index: true,
@@ -88,4 +115,4 @@ const suport: AppRouteObject = {
 	// ],
 };
 
-export default suport;
+export default support;

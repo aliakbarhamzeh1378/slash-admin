@@ -1,10 +1,10 @@
 import { Tag, Typography } from "antd";
+import { Rate } from "antd";
 
 import Card from "@/components/card";
 import { Iconify } from "@/components/icon";
 import Scrollbar from "@/components/scrollbar";
 import { themeVars } from "@/theme/theme.css";
-import { Rate } from "antd";
 
 const dataSource = [
 	{
@@ -48,11 +48,12 @@ const dataSource = [
 		reviews: "8.49k",
 	},
 ];
-export default function TopRelated() {
+
+export default function TopBrands() {
 	return (
 		<Card className="flex-col">
 			<header className="self-start">
-				<Typography.Title level={5}>Top Related Applications</Typography.Title>
+				<Typography.Title level={5}>Top Brands</Typography.Title>
 			</header>
 			<main className="w-full">
 				<Scrollbar>

@@ -1,87 +1,93 @@
-import { Col, Row, Space } from "antd";
+import { Col, Row, Typography } from "antd";
+import { Card } from "antd";
 
-import AreaDownload from "./area-download";
-import BannerCard from "./banner-card";
-import { Applications, Conversion } from "./conversion_applications";
-import CurrentDownload from "./current-download";
-import NewInvoice from "./new-invoice";
-import TopAuthor from "./top-authors";
-import TopInstalled from "./top-installed";
-import TopRelated from "./top-related";
-import TotalCard from "./total-card";
+import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
+import glass_buy from "@/assets/images/glass/ic_glass_buy.png";
+import glass_message from "@/assets/images/glass/ic_glass_message.png";
+import glass_users from "@/assets/images/glass/ic_glass_users.png";
+import { themeVars } from "@/theme/theme.css";
+
+import IntentUsageArea from "./intent-usage-area";
+import IntentUsage from "./intent-usage";
+import TopProducts from "./top-products";
+import TopBrands from "./top-brands";
+import TopUserCountry from "./top-installed";
+import StatCard from "./stat-card";
 
 function Workbench() {
 	return (
 		<div className="p-2">
+			<Typography.Title level={2}>Hi, Welcome back 👋</Typography.Title>
 			<Row gutter={[16, 16]} justify="center">
-				<Col span={24} lg={16}>
-					<BannerCard />
+				<Col lg={6} md={12} span={24}>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
-				<Col span={24} lg={8}>
-					<Space direction="vertical" size="large" className="h-full w-full justify-center">
-						<Conversion />
-						<Applications />
-					</Space>
+				<Col lg={6} md={12} span={24}>
+					<StatCard
+						cover={glass_users}
+						title="1.35m"
+						subtitle="New Users"
+						style={{
+							color: themeVars.colors.palette.info.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.info.defaultChannel} / .2)`,
+						}}
+					/>
+				</Col>
+				<Col lg={6} md={12} span={24}>
+					<StatCard
+						cover={glass_buy}
+						title="1.72m"
+						subtitle="New Orders"
+						style={{
+							color: themeVars.colors.palette.warning.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.warning.defaultChannel} / .2)`,
+						}}
+					/>
+				</Col>
+				<Col lg={6} md={12} span={24}>
+					<StatCard
+						cover={glass_message}
+						title="234"
+						subtitle="Bug Reports"
+						style={{
+							color: themeVars.colors.palette.error.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.error.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 			</Row>
 
-			<Row gutter={[16, 16]} className="mt-4" justify="center">
-				<Col span={24} md={8}>
-					<TotalCard
-						title="Total Active Users"
-						increase
-						count="18,765"
-						percent="2.6%"
-						chartData={[22, 8, 35, 50, 82, 84, 77, 12, 87, 43]}
-					/>
-				</Col>
-
-				<Col span={24} md={8}>
-					<TotalCard
-						title="Total Installed"
-						increase
-						count="4,876"
-						percent="0.2%"
-						chartData={[45, 52, 38, 24, 33, 26, 21, 20, 6]}
-					/>
-				</Col>
-
-				<Col span={24} md={8}>
-					<TotalCard
-						title="Total Downloads"
-						increase={false}
-						count="678"
-						percent="0.1%"
-						chartData={[35, 41, 62, 42, 13, 18, 29, 37, 36]}
-					/>
-				</Col>
-			</Row>
-
-			<Row gutter={[16, 16]} className="mt-4" justify="center">
-				<Col span={24} md={12} lg={8}>
-					<CurrentDownload />
-				</Col>
-				<Col span={24} md={12} lg={16}>
-					<AreaDownload />
-				</Col>
-			</Row>
-
-			<Row gutter={[16, 16]} className="mt-4" justify="center">
-				<Col span={24} md={12} lg={16}>
-					<NewInvoice />
+			<Row gutter={[16, 16]} className="mt-8" justify="center">
+				<Col span={24} lg={12} xl={16}>
+					<Card title="Website Visits">
+						<IntentUsageArea />
+					</Card>
 				</Col>
 				<Col span={24} md={12} lg={8}>
-					<TopRelated />
+					<IntentUsage />
 				</Col>
 			</Row>
 
 			<Row gutter={[16, 16]} className="mt-4" justify="center">
-				<Col span={24} md={12}>
-					<TopInstalled />
+				<Col span={24} md={12} lg={16}>
+					<TopProducts />
 				</Col>
+				<Col span={24} md={12} lg={8}>
+					<TopBrands />
+				</Col>
+			</Row>
 
-				<Col span={24} md={12}>
-					<TopAuthor />
+			<Row gutter={[16, 16]} className="mt-4" justify="center">
+				<Col span={24} md={24}>
+					<TopUserCountry />
 				</Col>
 			</Row>
 		</div>

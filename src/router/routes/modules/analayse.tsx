@@ -1,12 +1,12 @@
-import { Suspense } from "react";
-import { Outlet } from "react-router";
+import { lazy, Suspense } from "react";
+import { Navigate, Outlet } from "react-router";
 
 import { SvgIcon } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-// const ProfilePage = lazy(() => import("@/pages/analysis/user/profile"));
+const ProfilePage = lazy(() => import("@/pages/analysis/user/profile"));
 // const AccountPage = lazy(() => import("@/pages/analysis/user/account"));
 
 // const OrganizationPage = lazy(() => import("@/pages/analysis/system/organization"));
@@ -23,10 +23,41 @@ const analysis: AppRouteObject = {
 		</Suspense>
 	),
 	meta: {
-		label: "sys.menu.analysis",
+		label: "sys.menu.analysis.index",
 		icon: <SvgIcon icon="ic-analysis" className="ant-menu-item-icon" size="24" />,
 		key: "/analysis",
 	},
+	children: [
+		{
+			index: true,
+			element: <Navigate to="user" replace />,
+		},
+		{
+			path: "user",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.analysis.user", key: "/analysis/user" },
+		},
+		{
+			path: "product",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.analysis.product", key: "/analysis/product" },
+		},
+		{
+			path: "intent",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.analysis.intent", key: "/analysis/intent" },
+		},
+		{
+			path: "user_segmetation",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.analysis.user_segmetation", key: "/analysis/user_segmetation" },
+		},
+		{
+			path: "system",
+			element: <ProfilePage />,
+			meta: { label: "sys.menu.analysis.system", key: "/analysis/system" },
+		},
+	],
 	// children: [
 	// 	{
 	// 		index: true,

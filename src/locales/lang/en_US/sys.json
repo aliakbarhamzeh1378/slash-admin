@@ -85,20 +85,47 @@
 		"menu": {
 			"dashboard": "Dashboard",
 			"workbench": "Workbench",
-			"analysis": "Analysis",
-			"user_management": "User Management",
-			"website_management": "Website Management",
-			"sdk_management": "SDK Management",
-			"billing_plans": "Billing Plans",
+			"website_management": {
+				"index": "Website Management",
+				"user": "User",
+				"setup": "Setup",
+				"llm": "LLM & Prompt Config",
+				"export": "Export Chat Data"
+			},
+			"billing_plans": {
+				"index": "Billing Plans",
+				"plan": "Plan",
+				"upgrade": "Upgrade",
+				"history": "History"
+			},
 			"management": "Management",
 			"suport": "Support",
 			"account_management": "Account Management",
-
-			"support": "Support",
+			"sdk_management": {
+				"index": "SDK Management",
+				"setup": "Setup"
+			},
 			"user": {
 				"index": "User",
 				"profile": "Profile",
 				"account": "Account"
+			},
+			"user_management": {
+				"index": "User Management"
+			},
+			"support": {
+				"index": "Support",
+				"faq": "FAQs",
+				"guide": "SDK Integration Guide",
+				"contact": "Contact Support"
+			},
+			"analysis": {
+				"index": "Analysis",
+				"user": "User Behavior Insights",
+				"product": "Product Engagement Trends",
+				"intent": "Intent & Query Trends",
+				"user_segmetation": "User Segmentation",
+				"system": "System Performance"
 			},
 			"system": {
 				"index": "System",
