@@ -7,40 +7,56 @@ import { toast } from "sonner";
 import type { Result } from "#/api";
 import { ResultEnum } from "#/enum";
 
-// 创建 axios 实例
+// Create axios instance
 const axiosInstance = axios.create({
 	baseURL: import.meta.env.VITE_APP_BASE_API,
 	timeout: 50000,
 	headers: { "Content-Type": "application/json;charset=utf-8" },
 });
 
-// 请求拦截
+// Request interceptor
 axiosInstance.interceptors.request.use(
 	(config) => {
-		// 在请求被发送之前做些什么
-		config.headers.Authorization = "Bearer Token";
+		// Add authorization header if token exists
+		const userToken = userStore.getState().userToken;
+		if (userToken?.accessToken) {
+			config.headers.Authorization = `Bearer ${userToken.accessToken}`;
+		}
 		return config;
 	},
 	(error) => {
-		// 请求错误时做些什么
 		return Promise.reject(error);
 	},
 );
 
-// 响应拦截
+// Response interceptor
 axiosInstance.interceptors.response.use(
 	(res: AxiosResponse<Result>) => {
 		if (!res.data) throw new Error(t("sys.api.apiRequestFailed"));
 
-		const { status, data, message } = res.data;
-		// 业务请求成功
-		const hasSuccess = data && Reflect.has(res.data, "status") && status === ResultEnum.SUCCESS;
-		if (hasSuccess) {
-			return data;
+		// Transform auth response to match expected format
+		if (res.config.url?.includes("/auth/signin") || res.config.url?.includes("/auth/signup")) {
+			// The response is already in the correct format, just return it
+			return res.data;
 		}
 
-		// 业务请求错误
-		throw new Error(message || t("sys.api.apiRequestFailed"));
+		// Check if response has the standard format (status, data, message)
+		const hasStandardFormat = Reflect.has(res.data, "status") && Reflect.has(res.data, "data");
+
+		if (hasStandardFormat) {
+			const { status, data, message } = res.data;
+
+			// Business request success
+			if (data && status === ResultEnum.SUCCESS) {
+				return data;
+			}
+
+			// Business request error
+			throw new Error(message || t("sys.api.apiRequestFailed"));
+		}
+
+		// If response doesn't have standard format, return the data directly
+		return res.data;
 	},
 	(error: AxiosError<Result>) => {
 		const { response, message } = error || {};
@@ -88,4 +104,5 @@ class APIClient {
 		});
 	}
 }
+
 export default new APIClient();

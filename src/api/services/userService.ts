@@ -10,7 +10,13 @@ export interface SignInReq {
 export interface SignUpReq extends SignInReq {
 	email: string;
 }
-export type SignInRes = UserToken & { user: UserInfo };
+
+export interface SignInRes {
+	access_token: string;
+	refresh_token: string;
+	token_type: string;
+	user: UserInfo;
+}
 
 export enum UserApi {
 	SignIn = "/auth/signin",
@@ -20,13 +26,10 @@ export enum UserApi {
 	User = "/user",
 }
 
-const signin = (data: SignInReq) =>
-	apiClient.post<SignInRes>({ url: UserApi.SignIn, data });
-const signup = (data: SignUpReq) =>
-	apiClient.post<SignInRes>({ url: UserApi.SignUp, data });
+const signin = (data: SignInReq) => apiClient.post<SignInRes>({ url: UserApi.SignIn, data });
+const signup = (data: SignUpReq) => apiClient.post<SignInRes>({ url: UserApi.SignUp, data });
 const logout = () => apiClient.get({ url: UserApi.Logout });
-const findById = (id: string) =>
-	apiClient.get<UserInfo[]>({ url: `${UserApi.User}/${id}` });
+const findById = (id: string) => apiClient.get<UserInfo[]>({ url: `${UserApi.User}/${id}` });
 
 export default {
 	signin,

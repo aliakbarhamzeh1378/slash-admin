@@ -4,7 +4,7 @@ import { Navigate } from "react-router";
 import DashboardImg from "@/assets/images/background/dashboard.png";
 import Overlay from "@/assets/images/background/overlay.jpg";
 import LocalePicker from "@/components/locale-picker";
-import { useUserToken } from "@/store/userStore";
+import { useUserInfo, useUserToken } from "@/store/userStore";
 
 import SettingButton from "@/layouts/components/setting-button";
 import { themeVars } from "@/theme/theme.css";
@@ -20,11 +20,14 @@ const { VITE_APP_HOMEPAGE: HOMEPAGE } = import.meta.env;
 
 function Login() {
 	const token = useUserToken();
+	const userInfo = useUserInfo();
 
-	// 判断用户是否有权限
+	// Check if user has token and redirect based on has_submitted_website
 	if (token.accessToken) {
-		// 如果有授权，则跳转到首页
-		return <Navigate to={HOMEPAGE} replace />;
+		if (userInfo.has_submitted_website) {
+			return <Navigate to={HOMEPAGE} replace />;
+		}
+		return <Navigate to="/blank" replace />;
 	}
 
 	const gradientBg = rgbAlpha(themeVars.colors.background.defaultChannel, 0.9);

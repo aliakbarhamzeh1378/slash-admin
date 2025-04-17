@@ -52,12 +52,11 @@ const useUserStore = create<UserStore>()(
 
 export const useUserInfo = () => useUserStore((state) => state.userInfo);
 export const useUserToken = () => useUserStore((state) => state.userToken);
-export const useUserPermission = () =>
-	useUserStore((state) => state.userInfo.permissions);
+export const useUserPermission = () => useUserStore((state) => state.userInfo.permissions);
 export const useUserActions = () => useUserStore((state) => state.actions);
 
 export const useSignIn = () => {
-	const navigatge = useNavigate();
+	const navigate = useNavigate();
 	const { setUserToken, setUserInfo } = useUserActions();
 
 	const signInMutation = useMutation({
@@ -67,13 +66,27 @@ export const useSignIn = () => {
 	const signIn = async (data: SignInReq) => {
 		try {
 			const res = await signInMutation.mutateAsync(data);
-			const { user, accessToken, refreshToken } = res;
-			setUserToken({ accessToken, refreshToken });
+			console.log("Sign in response:", res);
+
+			const { user, access_token, refresh_token } = res;
+
+			setUserToken({
+				accessToken: access_token,
+				refreshToken: refresh_token,
+			});
 			setUserInfo(user);
-			navigatge(HOMEPAGE, { replace: true });
+
+			// Navigate based on whether user has submitted website
+			if (user.has_submitted_website) {
+				navigate(HOMEPAGE, { replace: true });
+			} else {
+				navigate("/blank", { replace: true });
+			}
+
 			toast.success("Sign in success!");
 		} catch (err) {
-			toast.error(err.message, {
+			console.error("Sign in error:", err);
+			toast.error(err.message || "Sign in failed", {
 				position: "top-center",
 			});
 		}

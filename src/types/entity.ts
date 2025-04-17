@@ -7,13 +7,10 @@ export interface UserToken {
 
 export interface UserInfo {
 	id: string;
-	email: string;
 	username: string;
-	password?: string;
-	avatar?: string;
-	role?: Role;
-	status?: BasicStatus;
-	permissions?: Permission[];
+	email: string;
+	permissions?: string[];
+	has_submitted_website?: boolean;
 }
 
 export interface Organization {
@@ -51,4 +48,17 @@ export interface Role {
 	order?: number;
 	desc?: string;
 	permission?: Permission[];
+}
+
+export interface SdkWizardData {
+	id: number;
+	user_id: number;
+	platform: string;
+	store_url: string;
+	database_access: string;
+	field_mappings?: Record<string, string>;
+	woo_commerce_secret_key?: string;
+	woo_commerce_client_key?: string;
+	is_data_extracted: boolean;
+	fields?: Record<string, any>;
 }

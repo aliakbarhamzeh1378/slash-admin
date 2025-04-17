@@ -1,18 +1,26 @@
-import { NavLink } from "react-router";
-
+import LogoImage from "@/assets/images/logo.png";
 import { useTheme } from "@/theme/hooks";
-
-import { Iconify } from "../icon";
+import { NavLink } from "react-router";
 
 interface Props {
 	size?: number | string;
 }
+
 function Logo({ size = 50 }: Props) {
 	const { themeTokens } = useTheme();
 
 	return (
 		<NavLink to="/">
-			<Iconify icon="solar:code-square-bold" color={themeTokens.color.palette.primary.default} size={size} />
+			<img
+				src={LogoImage}
+				alt="Logo"
+				style={{
+					width: size,
+					height: size,
+					objectFit: "contain",
+					filter: `drop-shadow(0 0 2px ${themeTokens.color.palette.primary.default})`,
+				}}
+			/>
 		</NavLink>
 	);
 }
