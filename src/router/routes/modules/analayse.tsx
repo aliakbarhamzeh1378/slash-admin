@@ -6,13 +6,12 @@ import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-const ProfilePage = lazy(() => import("@/pages/analysis/user/profile"));
-// const AccountPage = lazy(() => import("@/pages/analysis/user/account"));
-
-// const OrganizationPage = lazy(() => import("@/pages/analysis/system/organization"));
-// const PermissioPage = lazy(() => import("@/pages/analysis/system/permission"));
-
-// const Blog = lazy(() => import("@/pages/analysis/blog"));
+const ProductEngagementTrends = lazy(() => import("@/pages/analysis/components/ProductEngagementTrends"));
+const SalesPerformance = lazy(() => import("@/pages/analysis/components/SalesPerformance"));
+const IntentQueryTrends = lazy(() => import("@/pages/analysis/components/IntentQueryTrends"));
+const UserSegmentation = lazy(() => import("@/pages/analysis/components/UserSegmentation"));
+const SystemPerformance = lazy(() => import("@/pages/analysis/components/SystemPerformance"));
+const MostMentionedProducts = lazy(() => import("@/pages/analysis/components/MostMentionedProducts"));
 
 const analysis: AppRouteObject = {
 	order: 2,
@@ -30,93 +29,39 @@ const analysis: AppRouteObject = {
 	children: [
 		{
 			index: true,
-			element: <Navigate to="user" replace />,
-		},
-		{
-			path: "user",
-			element: <ProfilePage />,
-			meta: { label: "sys.menu.analysis.user", key: "/analysis/user" },
+			element: <Navigate to="product" replace />,
 		},
 		{
 			path: "product",
-			element: <ProfilePage />,
+			element: <ProductEngagementTrends />,
 			meta: { label: "sys.menu.analysis.product", key: "/analysis/product" },
 		},
 		{
+			path: "sales",
+			element: <SalesPerformance />,
+			meta: { label: "sys.menu.analysis.sales", key: "/analysis/sales" },
+		},
+		{
 			path: "intent",
-			element: <ProfilePage />,
+			element: <IntentQueryTrends />,
 			meta: { label: "sys.menu.analysis.intent", key: "/analysis/intent" },
 		},
 		{
-			path: "user_segmetation",
-			element: <ProfilePage />,
-			meta: { label: "sys.menu.analysis.user_segmetation", key: "/analysis/user_segmetation" },
+			path: "user_segmentation",
+			element: <UserSegmentation />,
+			meta: { label: "sys.menu.analysis.user_segmentation", key: "/analysis/user_segmentation" },
 		},
 		{
 			path: "system",
-			element: <ProfilePage />,
+			element: <SystemPerformance />,
 			meta: { label: "sys.menu.analysis.system", key: "/analysis/system" },
 		},
+		{
+			path: "mentions",
+			element: <MostMentionedProducts />,
+			meta: { label: "sys.menu.analysis.mentions", key: "/analysis/mentions" },
+		},
 	],
-	// children: [
-	// 	{
-	// 		index: true,
-	// 		element: <Navigate to="user" replace />,
-	// 	},
-	// 	{
-	// 		path: "user",
-	// 		meta: { label: "sys.menu.user.index", key: "/analysis/user" },
-	// 		children: [
-	// 			{
-	// 				index: true,
-	// 				element: <Navigate to="profile" replace />,
-	// 			},
-	// 			{
-	// 				path: "profile",
-	// 				element: <ProfilePage />,
-	// 				meta: {
-	// 					label: "sys.menu.user.profile",
-	// 					key: "/analysis/user/profile",
-	// 				},
-	// 			},
-	// 			{
-	// 				path: "account",
-	// 				element: <AccountPage />,
-	// 				meta: {
-	// 					label: "sys.menu.user.account",
-	// 					key: "/analysis/user/account",
-	// 				},
-	// 			},
-	// 		],
-	// 	},
-	// 	{
-	// 		path: "system",
-	// 		meta: { label: "sys.menu.system.index", key: "/analysis/system" },
-	// 		children: [
-	// 			{
-	// 				path: "organization",
-	// 				element: <OrganizationPage />,
-	// 				meta: {
-	// 					label: "sys.menu.system.organization",
-	// 					key: "/analysis/system/organization",
-	// 				},
-	// 			},
-	// 			{
-	// 				path: "permission",
-	// 				element: <PermissioPage />,
-	// 				meta: {
-	// 					label: "sys.menu.system.permission",
-	// 					key: "/analysis/system/permission",
-	// 				},
-	// 			},
-	// 		],
-	// 	},
-	// 	{
-	// 		path: "blog",
-	// 		element: <Blog />,
-	// 		meta: { label: "sys.menu.blog", key: "/analysis/blog" },
-	// 	},
-	// ],
 };
 
 export default analysis;
