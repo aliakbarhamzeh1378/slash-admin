@@ -5,7 +5,7 @@ import { useUserInfo } from "@/store/userStore";
 import { Button } from "@/ui/button";
 import { cn } from "@/utils";
 import type React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -20,6 +20,11 @@ const STEPS = [
 		id: "data-extraction",
 		title: "Data Extraction",
 		description: "Connect to your platform to extract product data",
+	},
+	{
+		id: "documentation-upload",
+		title: "Documentation Upload",
+		description: "Upload your website documentation or provide relevant links",
 	},
 	{
 		id: "fields-mapping",
@@ -50,6 +55,10 @@ interface FormData extends SdkWizardDataRequest {
 	backupFrequency: BackupFrequency;
 	arrayIdentifiers: Record<string, string>;
 	productIdentifier: string;
+	documentation: {
+		links: string[];
+		files: File[];
+	};
 }
 
 // Define the props for the component
@@ -98,6 +107,10 @@ export default function SdkWizard({ className }: SdkWizardProps) {
 		backupFrequency: "daily",
 		arrayIdentifiers: {},
 		productIdentifier: "",
+		documentation: {
+			links: [],
+			files: [],
+		},
 	});
 	const [isLoading, setIsLoading] = useState(false);
 	const [isValidated, setIsValidated] = useState(false);
@@ -169,10 +182,12 @@ export default function SdkWizard({ className }: SdkWizardProps) {
 			case 1:
 				return <DataExtractionStep {...stepProps} />;
 			case 2:
-				return <FieldsMappingStep {...stepProps} />;
+				return <DocumentationUploadStep {...stepProps} />;
 			case 3:
-				return <DataEmbeddingStep {...stepProps} />;
+				return <FieldsMappingStep {...stepProps} />;
 			case 4:
+				return <DataEmbeddingStep {...stepProps} />;
+			case 5:
 				return <CompletionStep formData={formData} />;
 			default:
 				return null;
@@ -1497,11 +1512,10 @@ function FieldsMappingStep({ formData, setFormData, isLoading, setIsLoading, set
 									<button
 										type="button"
 										onClick={() => handleSetProductIdentifier(fieldName)}
-										className={`text-xs px-2 py-1 rounded-full ${
-											isProductIdentifier(fieldName)
-												? "bg-primary text-white"
-												: "bg-gray-100 text-gray-600 hover:bg-gray-200"
-										}`}
+										className={`text-xs px-2 py-1 rounded-full ${isProductIdentifier(fieldName)
+											? "bg-primary text-white"
+											: "bg-gray-100 text-gray-600 hover:bg-gray-200"
+											}`}
 									>
 										{isProductIdentifier(fieldName) ? "Product ID" : "Set as Product ID"}
 									</button>
@@ -1510,11 +1524,10 @@ function FieldsMappingStep({ formData, setFormData, isLoading, setIsLoading, set
 									<button
 										type="button"
 										onClick={() => handleSetArrayIdentifier(arrayField, fieldName)}
-										className={`text-xs px-2 py-1 rounded-full ${
-											isArrayIdentifier(arrayField, fieldName)
-												? "bg-primary text-white"
-												: "bg-gray-100 text-gray-600 hover:bg-gray-200"
-										}`}
+										className={`text-xs px-2 py-1 rounded-full ${isArrayIdentifier(arrayField, fieldName)
+											? "bg-primary text-white"
+											: "bg-gray-100 text-gray-600 hover:bg-gray-200"
+											}`}
 									>
 										{isArrayIdentifier(arrayField, fieldName) ? "Identifier" : "Set as Identifier"}
 									</button>
@@ -2547,3 +2560,163 @@ const handleFieldSelectionChange = (
 		},
 	}));
 };
+
+// Add the new DocumentationUploadStep component
+function DocumentationUploadStep({ formData, setFormData }: StepProps) {
+	const [links, setLinks] = useState<string[]>(formData.documentation?.links || []);
+	const [newLink, setNewLink] = useState("");
+	const fileInputRef = useRef<HTMLInputElement>(null);
+
+	const handleAddLink = () => {
+		if (newLink.trim() && !links.includes(newLink.trim())) {
+			const updatedLinks = [...links, newLink.trim()];
+			setLinks(updatedLinks);
+			setFormData((prev) => ({
+				...prev,
+				documentation: {
+					...prev.documentation,
+					links: updatedLinks,
+				},
+			}));
+			setNewLink("");
+		}
+	};
+
+	const handleRemoveLink = (linkToRemove: string) => {
+		const updatedLinks = links.filter((link) => link !== linkToRemove);
+		setLinks(updatedLinks);
+		setFormData((prev) => ({
+			...prev,
+			documentation: {
+				...prev.documentation,
+				links: updatedLinks,
+			},
+		}));
+	};
+
+	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+		const files = Array.from(event.target.files || []);
+		setFormData((prev) => ({
+			...prev,
+			documentation: {
+				...prev.documentation,
+				files: [...(prev.documentation?.files || []), ...files],
+			},
+		}));
+	};
+
+	const handleRemoveFile = (fileToRemove: File) => {
+		setFormData((prev) => ({
+			...prev,
+			documentation: {
+				...prev.documentation,
+				files: prev.documentation?.files.filter((file) => file !== fileToRemove) || [],
+			},
+		}));
+	};
+
+	return (
+		<div className="space-y-6">
+			<div className="bg-white p-6 rounded-lg border">
+				<h3 className="text-lg font-medium mb-4">Upload Documentation</h3>
+				<p className="text-sm text-gray-500 mb-6">
+					Upload your website documentation or provide relevant links to help the chatbot better understand your store.
+				</p>
+
+				{/* Links Section */}
+				<div className="mb-6">
+					<h4 className="text-sm font-medium mb-2">Documentation Links</h4>
+					<div className="flex gap-2 mb-4">
+						<input
+							type="text"
+							value={newLink}
+							onChange={(e) => setNewLink(e.target.value)}
+							placeholder="Enter documentation URL"
+							className="flex-1 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/20"
+						/>
+						<Button
+							onClick={handleAddLink}
+							disabled={!newLink.trim()}
+							className="bg-primary text-white hover:bg-primary/90"
+						>
+							Add Link
+						</Button>
+					</div>
+					{links.length > 0 && (
+						<div className="space-y-2">
+							{links.map((link) => (
+								<div key={link} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+									<a href={link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+										{link}
+									</a>
+									<button
+										type="button"
+										onClick={() => handleRemoveLink(link)}
+										className="text-gray-400 hover:text-gray-600"
+									>
+										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<title>Remove link</title>
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+										</svg>
+									</button>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+
+				{/* File Upload Section */}
+				<div>
+					<h4 className="text-sm font-medium mb-2">Documentation Files</h4>
+					<div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+						<input
+							type="file"
+							ref={fileInputRef}
+							onChange={handleFileChange}
+							multiple
+							accept=".pdf,.doc,.docx,.txt,.md"
+							className="hidden"
+						/>
+						<button
+							type="button"
+							onClick={() => fileInputRef.current?.click()}
+							className="text-primary hover:text-primary/80"
+						>
+							<svg className="w-8 h-8 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+								<title>Upload file</title>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+								/>
+							</svg>
+							<p className="text-sm text-gray-600">Click to upload or drag and drop</p>
+							<p className="text-xs text-gray-500 mt-1">PDF, DOC, DOCX, TXT, or MD files</p>
+						</button>
+					</div>
+
+					{formData.documentation?.files && formData.documentation.files.length > 0 && (
+						<div className="mt-4 space-y-2">
+							{formData.documentation.files.map((file) => (
+								<div key={`${file.name}-${file.size}`} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+									<span className="text-sm text-gray-600">{file.name}</span>
+									<button
+										type="button"
+										onClick={() => handleRemoveFile(file)}
+										className="text-gray-400 hover:text-gray-600"
+									>
+										<svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+											<title>Remove file</title>
+											<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+										</svg>
+									</button>
+								</div>
+							))}
+						</div>
+					)}
+				</div>
+			</div>
+		</div>
+	);
+}

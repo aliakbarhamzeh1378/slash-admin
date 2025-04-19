@@ -15,6 +15,8 @@ class SdkWizardData(Base):
     woo_commerce_client_key = Column(String, nullable=True)
     is_data_extracted = Column(Boolean, default=False)
     fields = Column(JSON, nullable=True)
+    documentation_links = Column(JSON, nullable=True)  # Store array of documentation URLs
+    documentation_files = Column(JSON, nullable=True)  # Store array of file metadata
     
     # Relationship with User model
     user = relationship("User", back_populates="sdk_wizard_data") 

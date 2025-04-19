@@ -1,7 +1,10 @@
+import analysisService from "@/api/services/analysisService";
 import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
 import StatCard from "@/pages/dashboard/workbench/stat-card";
 import { themeVars } from "@/theme/theme.css";
+import { useEffect, useState } from "react";
 
+import type { UserSegmentationResponse } from "@/types/analysis";
 import {
 	ArrowDownOutlined,
 	ArrowUpOutlined,
@@ -17,20 +20,38 @@ import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typo
 const { Title, Paragraph, Text } = Typography;
 
 const UserSegmentation = () => {
-	// Sample data for the column chart - User Segments
-	const segmentData = [
-		{ segment: "New Users", value: 35, type: "Percentage" },
-		{ segment: "Active Users", value: 45, type: "Percentage" },
-		{ segment: "Power Users", value: 15, type: "Percentage" },
-		{ segment: "Inactive Users", value: 5, type: "Percentage" },
-	];
+	const [loading, setLoading] = useState(true);
+	const [segmentationData, setSegmentationData] = useState<UserSegmentationResponse | null>(null);
 
-	// Sample data for the pie chart - User Behavior
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const response = await analysisService.getUserSegmentation();
+				setSegmentationData(response);
+			} catch (error) {
+				console.error("Error fetching user segmentation data:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	// Transform API data for the column chart
+	const segmentData = segmentationData?.segments.map(segment => ({
+		segment: segment.name,
+		value: segment.percentage * 100,
+		type: "Percentage"
+	})) || [];
+
+	// Sample data for the pie chart - User Behavior (since it's not in the API)
 	const behaviorData = [
-		{ type: "Product Browsing", value: 40 },
+		{ type: "Product Browsing", value: 35 },
 		{ type: "Cart Addition", value: 25 },
 		{ type: "Checkout", value: 20 },
 		{ type: "Purchase", value: 15 },
+		{ type: "Reviews", value: 5 },
 	];
 
 	const columnConfig = {
@@ -84,9 +105,9 @@ const UserSegmentation = () => {
 			title: "Avg. Session Duration",
 			dataIndex: "avgSessionDuration",
 			key: "avgSessionDuration",
-			render: (value: string) => (
+			render: (value: number) => (
 				<Tooltip title="Average time spent per session">
-					<span>{value}</span>
+					<span>{value} min</span>
 				</Tooltip>
 			),
 		},
@@ -102,43 +123,32 @@ const UserSegmentation = () => {
 			),
 		},
 		{
-			title: "Retention Rate",
-			dataIndex: "retentionRate",
-			key: "retentionRate",
+			title: "Features Used",
+			dataIndex: "featuresUsed",
+			key: "featuresUsed",
 			render: (value: number) => (
-				<Tooltip title="Percentage of users who return">
-					<span>{value}%</span>
+				<Tooltip title="Number of features used by segment">
+					<span>{value}</span>
 				</Tooltip>
 			),
 		},
 	];
 
-	const tableData = [
-		{
-			key: "1",
-			segment: "New Users",
-			users: 3500,
-			avgSessionDuration: "8 min",
-			engagementScore: 65,
-			retentionRate: 45,
-		},
-		{
-			key: "2",
-			segment: "Active Users",
-			users: 4500,
-			avgSessionDuration: "15 min",
-			engagementScore: 85,
-			retentionRate: 75,
-		},
-		{
-			key: "3",
-			segment: "Power Users",
-			users: 1500,
-			avgSessionDuration: "25 min",
-			engagementScore: 95,
-			retentionRate: 90,
-		},
-	];
+	// Transform API data for the table
+	const tableData = segmentationData?.segments.map((segment, index) => ({
+		key: String(index + 1),
+		segment: segment.name,
+		users: segment.count,
+		avgSessionDuration: segment.avg_session_duration,
+		engagementScore: Math.round((segment.features_used / 15) * 100), // Calculate engagement score based on features used
+		featuresUsed: segment.features_used,
+	})) || [];
+
+	// Calculate statistics for the stat cards
+	const totalUsers = segmentationData?.total_users || 0;
+	const activeUsers = segmentationData?.segments.find(s => s.name === "Regular Users")?.count || 0;
+	const newUsers = segmentationData?.segments.find(s => s.name === "New Users")?.count || 0;
+	const retentionRate = Math.round((activeUsers / totalUsers) * 100);
 
 	return (
 		<div className="p-4">
@@ -162,8 +172,19 @@ const UserSegmentation = () => {
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={totalUsers.toLocaleString()}
+						subtitle="Total Users"
+						style={{
+							color: themeVars.colors.palette.primary.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.primary.defaultChannel} / .2)`,
+						}}
+					/>
+				</Col>
+				<Col span={6}>
+					<StatCard
+						cover={glass_bag}
+						title={activeUsers.toLocaleString()}
+						subtitle="Active Users"
 						style={{
 							color: themeVars.colors.palette.success.dark,
 							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
@@ -173,33 +194,22 @@ const UserSegmentation = () => {
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={newUsers.toLocaleString()}
+						subtitle="New Users"
 						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+							color: themeVars.colors.palette.warning.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.warning.defaultChannel} / .2)`,
 						}}
 					/>
 				</Col>
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={`${retentionRate}%`}
+						subtitle="Retention Rate"
 						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
-						}}
-					/>
-					</Col>
-				<Col span={6}>
-					<StatCard
-						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
-						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+							color: themeVars.colors.palette.info.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.info.defaultChannel} / .2)`,
 						}}
 					/>
 				</Col>
@@ -265,12 +275,13 @@ const UserSegmentation = () => {
 							dataSource={tableData}
 							pagination={{ pageSize: 5 }}
 							scroll={{ x: true }}
+							loading={loading}
 							rowClassName={(_record, index) => (index % 2 === 0 ? "table-row-light" : "table-row-dark")}
 						/>
 					</Card>
 				</Col>
 			</Row>
-		</div >
+		</div>
 	);
 };
 

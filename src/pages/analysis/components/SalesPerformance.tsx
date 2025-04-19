@@ -1,5 +1,9 @@
+import analysisService from "@/api/services/analysisService";
 import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
 import StatCard from "@/pages/dashboard/workbench/stat-card";
+import type { SalesPerformanceResponse } from "@/types/analysis";
+import { useEffect, useState } from "react";
+
 import { themeVars } from "@/theme/theme.css";
 import {
 	ArrowDownOutlined,
@@ -11,33 +15,45 @@ import {
 	ShoppingOutlined,
 } from "@ant-design/icons";
 import { Area, Pie } from "@ant-design/plots";
-import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
+import { Card, Col, Divider, Progress, Row, Spin, Statistic, Table, Tag, Tooltip, Typography } from "antd";
 
 const { Title, Paragraph, Text } = Typography;
 
 const SalesPerformance = () => {
-	// Sample data for the area chart - Sales Trend
-	const salesData = [
-		{ date: "2024-01", value: 3000, category: "Revenue" },
-		{ date: "2024-02", value: 3500, category: "Revenue" },
-		{ date: "2024-03", value: 3200, category: "Revenue" },
-		{ date: "2024-04", value: 4000, category: "Revenue" },
-		{ date: "2024-05", value: 3800, category: "Revenue" },
-		{ date: "2024-06", value: 4200, category: "Revenue" },
-		{ date: "2024-01", value: 150, category: "Orders" },
-		{ date: "2024-02", value: 180, category: "Orders" },
-		{ date: "2024-03", value: 165, category: "Orders" },
-		{ date: "2024-04", value: 200, category: "Orders" },
-		{ date: "2024-05", value: 190, category: "Orders" },
-		{ date: "2024-06", value: 210, category: "Orders" },
-	];
+	const [loading, setLoading] = useState(true);
+	const [data, setData] = useState<SalesPerformanceResponse | null>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				const response = await analysisService.getSalesPerformance();
+				setData(response);
+				setError(null);
+			} catch (err) {
+				setError(err instanceof Error ? err.message : "Failed to fetch data");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	// Transform API data for the area chart
+	const salesData = data?.performance.flatMap(item => [
+		{ date: item.date, value: item.revenue, category: "Revenue" },
+		{ date: item.date, value: item.orders, category: "Orders" }
+	]) || [];
 
 	// Sample data for the pie chart - Sales by Category
 	const categoryData = [
-		{ type: "Electronics", value: 40 },
+		{ type: "Electronics", value: 45 },
 		{ type: "Clothing", value: 25 },
-		{ type: "Home & Kitchen", value: 20 },
-		{ type: "Beauty", value: 15 },
+		{ type: "Home & Kitchen", value: 15 },
+		{ type: "Beauty", value: 10 },
+		{ type: "Sports", value: 5 },
 	];
 
 	const areaConfig = {
@@ -47,11 +63,18 @@ const SalesPerformance = () => {
 		seriesField: "category",
 		smooth: true,
 		areaStyle: {
-			fillOpacity: 0.3,
+			fillOpacity: 0.6,
 		},
-		legend: {
-			position: "top",
+		point: {
+			size: 5,
+			shape: "diamond",
 		},
+		label: {
+			style: {
+				fill: "#aaa",
+			},
+		},
+		color: ["#1890ff", "#52c41a"],
 	};
 
 	const pieConfig = {
@@ -61,6 +84,7 @@ const SalesPerformance = () => {
 		radius: 0.8,
 		label: {
 			type: "outer",
+			content: "{name} {percentage}",
 		},
 		interactions: [
 			{
@@ -72,10 +96,10 @@ const SalesPerformance = () => {
 	// Enhanced table columns with more metrics
 	const columns = [
 		{
-			title: "Product",
-			dataIndex: "product",
-			key: "product",
-			render: (text: string) => <a href="/analysis/sales">{text}</a>,
+			title: "Date",
+			dataIndex: "date",
+			key: "date",
+			sorter: (a: any, b: any) => a.date.localeCompare(b.date),
 		},
 		{
 			title: "Revenue",
@@ -83,7 +107,7 @@ const SalesPerformance = () => {
 			key: "revenue",
 			sorter: (a: any, b: any) => a.revenue - b.revenue,
 			render: (value: number) => (
-				<Tooltip title="Total revenue generated">
+				<Tooltip title="Total sales revenue">
 					<span>${value.toLocaleString()}</span>
 				</Tooltip>
 			),
@@ -93,12 +117,17 @@ const SalesPerformance = () => {
 			dataIndex: "orders",
 			key: "orders",
 			sorter: (a: any, b: any) => a.orders - b.orders,
+			render: (value: number) => (
+				<Tooltip title="Total number of orders">
+					<span>{value.toLocaleString()}</span>
+				</Tooltip>
+			),
 		},
 		{
 			title: "Avg. Order Value",
-			dataIndex: "avgOrderValue",
-			key: "avgOrderValue",
-			sorter: (a: any, b: any) => a.avgOrderValue - b.avgOrderValue,
+			dataIndex: "average_order_value",
+			key: "average_order_value",
+			sorter: (a: any, b: any) => a.average_order_value - b.average_order_value,
 			render: (value: number) => (
 				<Tooltip title="Average value per order">
 					<span>${value.toLocaleString()}</span>
@@ -106,60 +135,67 @@ const SalesPerformance = () => {
 			),
 		},
 		{
-			title: "Growth",
-			dataIndex: "growth",
-			key: "growth",
-			render: (value: number) => (
-				<Tag color={value >= 0 ? "green" : "red"}>
-					{value >= 0 ? "+" : ""}
-					{value}%
-				</Tag>
-			),
+			title: "Growth Rate",
+			dataIndex: "growth_rate",
+			key: "growth_rate",
+			sorter: (a: any, b: any) => a.growth_rate - b.growth_rate,
+			render: (value: number) => {
+				const isPositive = value > 0;
+				return (
+					<Tooltip title={`${isPositive ? "Increase" : "Decrease"} in sales compared to previous period`}>
+						<Tag color={isPositive ? "green" : "red"}>
+							{isPositive ? <ArrowUpOutlined /> : <ArrowDownOutlined />} {Math.abs(value * 100).toFixed(1)}%
+						</Tag>
+					</Tooltip>
+				);
+			},
 		},
 	];
 
-	const tableData = [
-		{
-			key: "1",
-			product: "Smartphone X",
-			revenue: 125000,
-			orders: 250,
-			avgOrderValue: 500,
-			growth: 15,
-		},
-		{
-			key: "2",
-			product: "Laptop Pro",
-			revenue: 98000,
-			orders: 120,
-			avgOrderValue: 816,
-			growth: 8,
-		},
-		{
-			key: "3",
-			product: "Wireless Earbuds",
-			revenue: 75000,
-			orders: 300,
-			avgOrderValue: 250,
-			growth: 25,
-		},
-	];
+	// Transform API data for the table
+	const tableData = data?.performance || [];
+
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center h-96">
+				<Spin size="large" />
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex justify-center items-center h-96">
+				<Text type="danger">{error}</Text>
+			</div>
+		);
+	}
+
+	// Calculate totals from API data
+	const performance = data?.performance || [];
+	const totalRevenue = performance.reduce((sum, item) => sum + item.revenue, 0);
+	const totalOrders = performance.reduce((sum, item) => sum + item.orders, 0);
+	const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+
+	// Calculate growth rate (comparing last period to previous period)
+	const growthRate = performance.length >= 2
+		? (performance[performance.length - 1].revenue - performance[performance.length - 2].revenue) / performance[performance.length - 2].revenue
+		: 0;
 
 	return (
 		<div className="p-4">
 			<div className="mb-4">
-				<Title level={2} >
-					<span role="img" aria-label="sales">
+				<Title level={2}>
+					<span role="img" aria-label="chart">
 						💰
 					</span>{" "}
 					Sales Performance
 				</Title>
 				<Paragraph>
-					<Tooltip title="Analyze your sales data to track revenue, order volume, and average order value. Identify trends and opportunities to optimize pricing and inventory strategies.">
+					<Tooltip title="Track and analyze your sales performance, including revenue, orders, and growth rates. Use this data to identify trends and optimize your sales strategy.">
 						<InfoCircleOutlined className="mr-2" />
 					</Tooltip>
-					<Text strong>Monitor key sales metrics</Text> to understand your business performance and identify
-					opportunities for growth and optimization.
+					<Text strong>Monitor sales metrics</Text> to understand your business performance and identify opportunities for growth.
 				</Paragraph>
 				<Divider style={{ margin: "12px 0" }} />
 			</div>
@@ -167,8 +203,19 @@ const SalesPerformance = () => {
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={`$${totalRevenue.toLocaleString()}`}
+						subtitle="Total Revenue"
+						style={{
+							color: themeVars.colors.palette.primary.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.primary.defaultChannel} / .2)`,
+						}}
+					/>
+				</Col>
+				<Col span={6}>
+					<StatCard
+						cover={glass_bag}
+						title={totalOrders.toLocaleString()}
+						subtitle="Total Orders"
 						style={{
 							color: themeVars.colors.palette.success.dark,
 							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
@@ -178,33 +225,24 @@ const SalesPerformance = () => {
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={`$${avgOrderValue.toLocaleString()}`}
+						subtitle="Avg. Order Value"
 						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+							color: themeVars.colors.palette.warning.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.warning.defaultChannel} / .2)`,
 						}}
 					/>
 				</Col>
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={`${(growthRate * 100).toFixed(1)}%`}
+						subtitle="Growth Rate"
 						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
-						}}
-					/>
-				</Col>
-				<Col span={6}>
-					<StatCard
-						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
-						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+							color: growthRate >= 0 ? themeVars.colors.palette.success.dark : themeVars.colors.palette.error.dark,
+							backgroundColor: growthRate >= 0
+								? `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`
+								: `rgba(${themeVars.colors.palette.error.defaultChannel} / .2)`,
 						}}
 					/>
 				</Col>
@@ -212,7 +250,7 @@ const SalesPerformance = () => {
 					<Card
 						title={
 							<>
-								<span role="img" aria-label="trend">
+								<span role="img" aria-label="area chart">
 									📈
 								</span>{" "}
 								Sales Trend
@@ -220,7 +258,7 @@ const SalesPerformance = () => {
 						}
 						extra={
 							<Tooltip title="Revenue and order trends over time">
-								<InfoCircleOutlined style={{ color: "#52c41a" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -232,15 +270,15 @@ const SalesPerformance = () => {
 					<Card
 						title={
 							<>
-								<span role="img" aria-label="pie">
+								<span role="img" aria-label="pie chart">
 									🥧
 								</span>{" "}
 								Sales by Category
 							</>
 						}
 						extra={
-							<Tooltip title="Revenue distribution by product category">
-								<InfoCircleOutlined style={{ color: "#52c41a" }} />
+							<Tooltip title="Distribution of sales across product categories">
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -252,26 +290,15 @@ const SalesPerformance = () => {
 					<Card
 						title={
 							<>
-								<span role="img" aria-label="details">
-									📊
+								<span role="img" aria-label="table">
+									📋
 								</span>{" "}
-								Product Performance
+								Sales Performance Details
 							</>
-						}
-						extra={
-							<Tooltip title="Detailed product sales metrics">
-								<InfoCircleOutlined style={{ color: "#52c41a" }} />
-							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
 					>
-						<Table
-							columns={columns}
-							dataSource={tableData}
-							pagination={{ pageSize: 5 }}
-							scroll={{ x: true }}
-							rowClassName={(_record, index) => (index % 2 === 0 ? "table-row-light" : "table-row-dark")}
-						/>
+						<Table columns={columns} dataSource={tableData} pagination={{ pageSize: 5 }} />
 					</Card>
 				</Col>
 			</Row>

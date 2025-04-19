@@ -13,4 +13,9 @@ class User(Base):
     has_submitted_website = Column(Boolean, default=False, nullable=False)
     
     # Relationship with SdkWizardData
-    sdk_wizard_data = relationship("SdkWizardData", back_populates="user", uselist=False) 
+    sdk_wizard_data = relationship("SdkWizardData", back_populates="user", uselist=False)
+    
+    # Relationships with billing models
+    subscription = relationship("UserSubscription", back_populates="user", uselist=False)
+    billing_history = relationship("BillingHistory", back_populates="user")
+    usage_stats = relationship("UsageStats", back_populates="user", uselist=False) 

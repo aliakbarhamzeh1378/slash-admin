@@ -1,23 +1,39 @@
-import { Card, Table, Typography } from 'antd';
+import { Card, Table, Typography, message } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import type React from 'react';
+import { useEffect, useState } from 'react';
+
+import { getBillingHistory } from '@/services/billing';
+import type { BillingHistory } from '@/services/billing';
 
 const { Title } = Typography;
 
-interface BillingHistoryItem {
-  key: string;
-  date: string;
-  amount: number;
-  plan: string;
-  status: string;
-}
+const BillingHistoryPage: React.FC = () => {
+  const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState<BillingHistory[]>([]);
 
-const BillingHistory: React.FC = () => {
-  const columns: ColumnsType<BillingHistoryItem> = [
+  useEffect(() => {
+    const fetchHistory = async () => {
+      try {
+        setLoading(true);
+        const data = await getBillingHistory();
+        setHistory(data);
+      } catch (error) {
+        message.error('Failed to fetch billing history');
+        console.error('Error fetching billing history:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHistory();
+  }, []);
+
+  const columns: ColumnsType<BillingHistory> = [
     {
       title: 'Date',
-      dataIndex: 'date',
-      key: 'date',
+      dataIndex: 'payment_date',
+      key: 'payment_date',
+      render: (date: string) => new Date(date).toLocaleDateString(),
     },
     {
       title: 'Amount',
@@ -29,6 +45,7 @@ const BillingHistory: React.FC = () => {
       title: 'Plan',
       dataIndex: 'plan',
       key: 'plan',
+      render: (plan) => plan.name,
     },
     {
       title: 'Status',
@@ -37,29 +54,17 @@ const BillingHistory: React.FC = () => {
     },
   ];
 
-  const data: BillingHistoryItem[] = [
-    {
-      key: '1',
-      date: '2024-04-01',
-      amount: 29.99,
-      plan: 'Pro Plan',
-      status: 'Paid',
-    },
-    {
-      key: '2',
-      date: '2024-03-01',
-      amount: 29.99,
-      plan: 'Pro Plan',
-      status: 'Paid',
-    },
-  ];
-
   return (
     <Card>
       <Title level={2}>Billing History</Title>
-      <Table columns={columns} dataSource={data} />
+      <Table
+        columns={columns}
+        dataSource={history}
+        rowKey="id"
+        loading={loading}
+      />
     </Card>
   );
 };
 
-export default BillingHistory; 
+export default BillingHistoryPage; 

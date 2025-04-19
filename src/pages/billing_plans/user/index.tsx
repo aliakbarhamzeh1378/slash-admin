@@ -1,34 +1,56 @@
 import { ArrowUpOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Progress, Row, Statistic, Typography } from 'antd';
-import type React from 'react';
+import { Button, Card, Col, Progress, Row, Statistic, Typography, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+
+import { getCurrentPlan } from '@/services/billing';
+import type { CurrentPlan } from '@/services/billing';
 
 const { Title, Text } = Typography;
 
-const BillingPlansIndex: React.FC = () => {
-  // Mock data - in a real app, this would come from an API
-  const currentPlan = {
-    name: 'Pro Plan',
-    price: '$29.99/month',
-    status: 'Active',
-    nextBillingDate: '2024-05-01',
-    features: ['Unlimited Projects', 'Team Collaboration', 'Advanced Analytics', 'Priority Support'],
-  };
+const BillingPlansIndex = () => {
+  const [loading, setLoading] = useState(false);
+  const [currentPlan, setCurrentPlan] = useState<CurrentPlan | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchCurrentPlan = async () => {
+      try {
+        setLoading(true);
+        const data = await getCurrentPlan();
+        setCurrentPlan(data);
+      } catch (error) {
+        message.error('Failed to fetch current plan');
+        console.error('Error fetching current plan:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentPlan();
+  }, []);
+
+  if (loading || !currentPlan) {
+    return <div>Loading...</div>;
+  }
+
+  const { plan, subscription, usage_stats } = currentPlan;
 
   const usageStats = {
     apiCalls: {
-      used: 75000,
-      total: 100000,
-      percentage: 75,
+      used: usage_stats.api_calls_used,
+      total: usage_stats.api_calls_limit,
+      percentage: Math.round((usage_stats.api_calls_used / usage_stats.api_calls_limit) * 100),
     },
     storage: {
-      used: 45,
-      total: 100,
-      percentage: 45,
+      used: usage_stats.storage_used,
+      total: usage_stats.storage_limit,
+      percentage: Math.round((usage_stats.storage_used / usage_stats.storage_limit) * 100),
     },
     teamMembers: {
-      used: 8,
-      total: 10,
-      percentage: 80,
+      used: usage_stats.team_members_used,
+      total: usage_stats.team_members_limit,
+      percentage: Math.round((usage_stats.team_members_used / usage_stats.team_members_limit) * 100),
     },
   };
 
@@ -37,12 +59,12 @@ const BillingPlansIndex: React.FC = () => {
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Card>
-            <Title level={2}>Current Plan: {currentPlan.name}</Title>
+            <Title level={2}>Current Plan: {plan.name}</Title>
             <Row gutter={[16, 16]}>
               <Col span={8}>
                 <Statistic
                   title="Monthly Cost"
-                  value={currentPlan.price}
+                  value={plan.price}
                   prefix="$"
                   valueStyle={{ color: '#3f8600' }}
                 />
@@ -50,7 +72,7 @@ const BillingPlansIndex: React.FC = () => {
               <Col span={8}>
                 <Statistic
                   title="Status"
-                  value={currentPlan.status}
+                  value={subscription.status}
                   valueStyle={{ color: '#3f8600' }}
                   prefix={<CheckCircleOutlined />}
                 />
@@ -58,7 +80,7 @@ const BillingPlansIndex: React.FC = () => {
               <Col span={8}>
                 <Statistic
                   title="Next Billing Date"
-                  value={currentPlan.nextBillingDate}
+                  value={subscription.end_date}
                   prefix={<ClockCircleOutlined />}
                 />
               </Col>
@@ -69,8 +91,8 @@ const BillingPlansIndex: React.FC = () => {
         <Col span={24}>
           <Card title="Plan Features">
             <Row gutter={[16, 16]}>
-              {currentPlan.features.map((feature, index) => (
-                <Col span={6} key={index}>
+              {plan.features.map((feature: string) => (
+                <Col span={6} key={feature}>
                   <Text>
                     <CheckCircleOutlined style={{ color: '#52c41a' }} /> {feature}
                   </Text>
@@ -97,7 +119,7 @@ const BillingPlansIndex: React.FC = () => {
                   <Text>Storage Usage</Text>
                   <Progress
                     percent={usageStats.storage.percentage}
-                    format={() => `${usageStats.storage.used}GB / ${usageStats.storage.total}GB`}
+                    format={() => `${usageStats.storage.used}MB / ${usageStats.storage.total}MB`}
                   />
                 </Card>
               </Col>
@@ -115,18 +137,9 @@ const BillingPlansIndex: React.FC = () => {
         </Col>
 
         <Col span={24}>
-          <Card>
-            <Row gutter={16} justify="end">
-              <Col>
-                <Button type="primary" href="/billing_plans/upgrade">
-                  Upgrade Plan
-                </Button>
-              </Col>
-              <Col>
-                <Button href="/billing_plans/history">View Billing History</Button>
-              </Col>
-            </Row>
-          </Card>
+          <Button type="primary" size="large" onClick={() => navigate('/billing_plans/upgrade')}>
+            Upgrade Plan
+          </Button>
         </Col>
       </Row>
     </div>

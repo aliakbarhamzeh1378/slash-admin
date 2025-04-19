@@ -13,6 +13,13 @@ export interface SdkWizardDataRequest {
 	selected_fields?: string[];
 	backup_enabled?: boolean;
 	backup_frequency?: "hourly" | "daily" | "weekly";
+	documentation_links?: string[];
+	documentation_files?: Array<{
+		name: string;
+		size: number;
+		type: string;
+		lastModified: number;
+	}>;
 }
 
 export interface ConnectionValidationRequest {
@@ -24,7 +31,14 @@ export interface ConnectionValidationRequest {
 
 // Make ExtractedProduct more flexible to handle any fields
 export interface ExtractedProduct {
-	[key: string]: any; // Allow any string key with any value type
+	id: string;
+	name: string;
+	description: string;
+	price: number;
+	category: string;
+	images: string[];
+	variants: any[];
+	metadata: Record<string, any>;
 }
 
 export interface ExtractDataRequest {
@@ -70,6 +84,25 @@ const sdkWizardService = {
 	completeWizard: () => {
 		return apiClient.post<{ message: string }>({
 			url: "/sdk-wizard/complete",
+		});
+	},
+
+	getDashboard: () => {
+		return apiClient.get<{
+			stats: {
+				totalIntegrations: number;
+				activeIntegrations: number;
+				pendingUpdates: number;
+				healthScore: number;
+			};
+			recent_activities: Array<{
+				id: number;
+				type: string;
+				message: string;
+				time: string;
+			}>;
+		}>({
+			url: "/sdk-wizard/dashboard",
 		});
 	},
 };

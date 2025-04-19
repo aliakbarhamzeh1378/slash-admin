@@ -6,21 +6,62 @@ import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-const ProductEngagementTrends = lazy(() => import("@/pages/analysis/components/ProductEngagementTrends"));
-const SalesPerformance = lazy(() => import("@/pages/analysis/components/SalesPerformance"));
-const IntentQueryTrends = lazy(() => import("@/pages/analysis/components/IntentQueryTrends"));
-const UserSegmentation = lazy(() => import("@/pages/analysis/components/UserSegmentation"));
-const SystemPerformance = lazy(() => import("@/pages/analysis/components/SystemPerformance"));
-const MostMentionedProducts = lazy(() => import("@/pages/analysis/components/MostMentionedProducts"));
+// Lazy-loaded components
+const AnalysisComponents = {
+	ProductEngagementTrends: lazy(() => import("@/pages/analysis/components/ProductEngagementTrends")),
+	SalesPerformance: lazy(() => import("@/pages/analysis/components/SalesPerformance")),
+	IntentQueryTrends: lazy(() => import("@/pages/analysis/components/IntentQueryTrends")),
+	UserSegmentation: lazy(() => import("@/pages/analysis/components/UserSegmentation")),
+	SystemPerformance: lazy(() => import("@/pages/analysis/components/SystemPerformance")),
+	MostMentionedProducts: lazy(() => import("@/pages/analysis/components/MostMentionedProducts")),
+};
 
+// Layout component for analysis section
+const AnalysisLayout = () => (
+	<Suspense fallback={<CircleLoading />}>
+		<Outlet />
+	</Suspense>
+);
+
+// Route configuration
+const analysisRoutes = [
+	{
+		path: "product",
+		element: <AnalysisComponents.ProductEngagementTrends />,
+		meta: { label: "sys.menu.analysis.product", key: "/analysis/product" },
+	},
+	{
+		path: "sales",
+		element: <AnalysisComponents.SalesPerformance />,
+		meta: { label: "sys.menu.analysis.sales", key: "/analysis/sales" },
+	},
+	{
+		path: "intent",
+		element: <AnalysisComponents.IntentQueryTrends />,
+		meta: { label: "sys.menu.analysis.intent", key: "/analysis/intent" },
+	},
+	{
+		path: "user_segmentation",
+		element: <AnalysisComponents.UserSegmentation />,
+		meta: { label: "sys.menu.analysis.user_segmentation", key: "/analysis/user_segmentation" },
+	},
+	{
+		path: "system",
+		element: <AnalysisComponents.SystemPerformance />,
+		meta: { label: "sys.menu.analysis.system", key: "/analysis/system" },
+	},
+	{
+		path: "mentions",
+		element: <AnalysisComponents.MostMentionedProducts />,
+		meta: { label: "sys.menu.analysis.mentions", key: "/analysis/mentions" },
+	},
+];
+
+// Main analysis route configuration
 const analysis: AppRouteObject = {
 	order: 2,
 	path: "analysis",
-	element: (
-		<Suspense fallback={<CircleLoading />}>
-			<Outlet />
-		</Suspense>
-	),
+	element: <AnalysisLayout />,
 	meta: {
 		label: "sys.menu.analysis.index",
 		icon: <Iconify icon="icon-park-outline:market-analysis" className="ant-menu-item-icon" size="24" />,
@@ -31,36 +72,7 @@ const analysis: AppRouteObject = {
 			index: true,
 			element: <Navigate to="product" replace />,
 		},
-		{
-			path: "product",
-			element: <ProductEngagementTrends />,
-			meta: { label: "sys.menu.analysis.product", key: "/analysis/product" },
-		},
-		{
-			path: "sales",
-			element: <SalesPerformance />,
-			meta: { label: "sys.menu.analysis.sales", key: "/analysis/sales" },
-		},
-		{
-			path: "intent",
-			element: <IntentQueryTrends />,
-			meta: { label: "sys.menu.analysis.intent", key: "/analysis/intent" },
-		},
-		{
-			path: "user_segmentation",
-			element: <UserSegmentation />,
-			meta: { label: "sys.menu.analysis.user_segmentation", key: "/analysis/user_segmentation" },
-		},
-		{
-			path: "system",
-			element: <SystemPerformance />,
-			meta: { label: "sys.menu.analysis.system", key: "/analysis/system" },
-		},
-		{
-			path: "mentions",
-			element: <MostMentionedProducts />,
-			meta: { label: "sys.menu.analysis.mentions", key: "/analysis/mentions" },
-		},
+		...analysisRoutes,
 	],
 };
 

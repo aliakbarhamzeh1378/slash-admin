@@ -1,39 +1,54 @@
+import analysisService from "@/api/services/analysisService";
 import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
 import StatCard from "@/pages/dashboard/workbench/stat-card";
+import type { ProductEngagementResponse } from "@/types/analysis";
+import { useEffect, useState } from "react";
 
 import { themeVars } from "@/theme/theme.css";
 import {
-	ArrowDownOutlined,
-	ArrowUpOutlined,
-	ClockCircleOutlined,
-	EyeOutlined,
 	InfoCircleOutlined,
-	ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { Bar, Line } from "@ant-design/plots";
-import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
+import { Card, Col, Divider, Progress, Row, Spin, Table, Tag, Tooltip, Typography } from "antd";
 
 const { Title, Paragraph, Text } = Typography;
 
 const ProductEngagementTrends = () => {
+	const [loading, setLoading] = useState(true);
+	const [data, setData] = useState<ProductEngagementResponse | null>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				const response = await analysisService.getProductEngagement();
+				setData(response);
+				setError(null);
+			} catch (err) {
+				setError(err instanceof Error ? err.message : "Failed to fetch data");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
 	// Sample data for the bar chart - Product Categories Performance
 	const categoryData = [
-		{ category: "Electronics", views: 2500, clicks: 1800, conversions: 450 },
-		{ category: "Clothing", views: 3200, clicks: 2100, conversions: 380 },
-		{ category: "Home & Kitchen", views: 1800, clicks: 1200, conversions: 280 },
-		{ category: "Beauty", views: 1500, clicks: 900, conversions: 220 },
-		{ category: "Sports", views: 1200, clicks: 800, conversions: 180 },
+		{ category: "Electronics", views: 45000, clicks: 32000, conversions: 8500 },
+		{ category: "Clothing", views: 38000, clicks: 25000, conversions: 6200 },
+		{ category: "Home & Kitchen", views: 28000, clicks: 18000, conversions: 4500 },
+		{ category: "Beauty", views: 22000, clicks: 15000, conversions: 3800 },
+		{ category: "Sports", views: 18000, clicks: 12000, conversions: 3000 },
 	];
 
-	// Sample data for the line chart - Engagement Trends
-	const trendData = [
-		{ date: "2024-01", value: 65 },
-		{ date: "2024-02", value: 72 },
-		{ date: "2024-03", value: 68 },
-		{ date: "2024-04", value: 75 },
-		{ date: "2024-05", value: 82 },
-		{ date: "2024-06", value: 78 },
-	];
+	// Transform API data for the line chart
+	const trendData = data?.trends.map(trend => ({
+		date: trend.date,
+		value: trend.engagement_rate * 100, // Convert to percentage
+	})) || [];
 
 	const barConfig = {
 		data: categoryData,
@@ -144,35 +159,40 @@ const ProductEngagementTrends = () => {
 		},
 	];
 
-	const tableData = [
-		{
-			key: "1",
-			name: "Smartphone X",
-			views: 12500,
-			clicks: 4500,
-			ctr: 36,
-			conversionRate: 15,
-			avgSessionDuration: "2m 30s",
-		},
-		{
-			key: "2",
-			name: "Laptop Pro",
-			views: 8900,
-			clicks: 3200,
-			ctr: 28,
-			conversionRate: 12,
-			avgSessionDuration: "3m 15s",
-		},
-		{
-			key: "3",
-			name: "Wireless Earbuds",
-			views: 15600,
-			clicks: 7800,
-			ctr: 42,
-			conversionRate: 18,
-			avgSessionDuration: "1m 45s",
-		},
-	];
+	// Transform API data for the table
+	const tableData = data?.trends.map((trend, index) => ({
+		key: index.toString(),
+		name: `Product ${index + 1}`,
+		views: trend.views,
+		clicks: trend.clicks,
+		ctr: Math.round((trend.clicks / trend.views) * 100),
+		conversionRate: Math.round((trend.conversions / trend.views) * 100),
+		avgSessionDuration: "3m 45s", // This would come from the API in a real implementation
+	})) || [];
+
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center h-96">
+				<Spin size="large" />
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex justify-center items-center h-96">
+				<Text type="danger">{error}</Text>
+			</div>
+		);
+	}
+
+	// Calculate totals from API data
+	const trends = data?.trends || [];
+	const totalViews = trends.reduce((sum, trend) => sum + trend.views, 0);
+	const totalClicks = trends.reduce((sum, trend) => sum + trend.clicks, 0);
+	const avgConversionRate = trends.length > 0
+		? (trends.reduce((sum, trend) => sum + (trend.conversions / trend.views), 0) / trends.length) * 100
+		: 0;
 
 	return (
 		<div className="p-4">
@@ -196,8 +216,19 @@ const ProductEngagementTrends = () => {
 				<Col span={8}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={totalViews.toLocaleString()}
+						subtitle="Total Views"
+						style={{
+							color: themeVars.colors.palette.primary.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.primary.defaultChannel} / .2)`,
+						}}
+					/>
+				</Col>
+				<Col span={8}>
+					<StatCard
+						cover={glass_bag}
+						title={totalClicks.toLocaleString()}
+						subtitle="Total Clicks"
 						style={{
 							color: themeVars.colors.palette.success.dark,
 							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
@@ -207,22 +238,11 @@ const ProductEngagementTrends = () => {
 				<Col span={8}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={`${avgConversionRate.toFixed(1)}%`}
+						subtitle="Conversion Rate"
 						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
-						}}
-					/>
-				</Col>
-				<Col span={8}>
-					<StatCard
-						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
-						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+							color: themeVars.colors.palette.warning.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.warning.defaultChannel} / .2)`,
 						}}
 					/>
 				</Col>
@@ -253,11 +273,11 @@ const ProductEngagementTrends = () => {
 								<span role="img" aria-label="line chart">
 									📉
 								</span>{" "}
-								Engagement Trend
+								Engagement Trends
 							</>
 						}
 						extra={
-							<Tooltip title="Monthly engagement trend">
+							<Tooltip title="Daily engagement rate trends">
 								<InfoCircleOutlined />
 							</Tooltip>
 						}
@@ -276,20 +296,9 @@ const ProductEngagementTrends = () => {
 								Product Performance Details
 							</>
 						}
-						extra={
-							<Tooltip title="Detailed product engagement metrics">
-								<InfoCircleOutlined />
-							</Tooltip>
-						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
 					>
-						<Table
-							columns={columns}
-							dataSource={tableData}
-							pagination={{ pageSize: 5 }}
-							scroll={{ x: true }}
-							rowClassName={(record, index) => (index % 2 === 0 ? "table-row-light" : "table-row-dark")}
-						/>
+						<Table columns={columns} dataSource={tableData} pagination={{ pageSize: 5 }} />
 					</Card>
 				</Col>
 			</Row>

@@ -1,21 +1,42 @@
+import analysisService from "@/api/services/analysisService";
+import type { MostMentionedProductsResponse, ProductMention } from "@/types/analysis";
 import { ArrowDownOutlined, ArrowUpOutlined, InfoCircleOutlined, MessageOutlined } from "@ant-design/icons";
 import { Bar } from "@ant-design/plots";
-import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
+import { Card, Col, Divider, Progress, Row, Spin, Statistic, Table, Tag, Tooltip, Typography } from "antd";
+import { useEffect, useState } from "react";
 
 const { Title, Paragraph, Text } = Typography;
 
 const MostMentionedProducts = () => {
-	// Sample data for the bar chart
-	const data = [
-		{ product: "Product A", mentions: 150 },
-		{ product: "Product B", mentions: 120 },
-		{ product: "Product C", mentions: 90 },
-		{ product: "Product D", mentions: 80 },
-		{ product: "Product E", mentions: 70 },
-	];
+	const [loading, setLoading] = useState(true);
+	const [data, setData] = useState<MostMentionedProductsResponse | null>(null);
+	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				const response = await analysisService.getMostMentionedProducts();
+				setData(response);
+				setError(null);
+			} catch (err) {
+				setError(err instanceof Error ? err.message : "Failed to fetch data");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	// Transform API data for the bar chart
+	const chartData = data?.products.map(product => ({
+		product: product.name,
+		mentions: product.mentions
+	})) || [];
 
 	const config = {
-		data,
+		data: chartData,
 		xField: "mentions",
 		yField: "product",
 		seriesField: "product",
@@ -28,7 +49,28 @@ const MostMentionedProducts = () => {
 		color: ["#1890ff", "#52c41a", "#faad14", "#722ed1", "#f5222d"],
 	};
 
-	// Sample data for the table
+	// Helper function to determine sentiment from score
+	const getSentimentFromScore = (score: number): string => {
+		if (score >= 0.6) return "Positive";
+		if (score <= 0.4) return "Negative";
+		return "Neutral";
+	};
+
+	// Helper function to format growth rate
+	const formatGrowthRate = (rate: number): string => {
+		const prefix = rate >= 0 ? "+" : "";
+		return `${prefix}${(rate * 100).toFixed(1)}%`;
+	};
+
+	// Transform API data for the table
+	const tableData = data?.products.map((product, index) => ({
+		key: index.toString(),
+		product: product.name,
+		mentions: product.mentions,
+		sentiment: getSentimentFromScore(product.sentiment_score),
+		growth: formatGrowthRate(product.growth_rate)
+	})) || [];
+
 	const columns = [
 		{
 			title: "Product",
@@ -68,29 +110,21 @@ const MostMentionedProducts = () => {
 		},
 	];
 
-	const tableData = [
-		{
-			key: "1",
-			product: "Product A",
-			mentions: 150,
-			sentiment: "Positive",
-			growth: "+15%",
-		},
-		{
-			key: "2",
-			product: "Product B",
-			mentions: 120,
-			sentiment: "Neutral",
-			growth: "+5%",
-		},
-		{
-			key: "3",
-			product: "Product C",
-			mentions: 90,
-			sentiment: "Positive",
-			growth: "+25%",
-		},
-	];
+	if (loading) {
+		return (
+			<div className="flex justify-center items-center h-96">
+				<Spin size="large" />
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex justify-center items-center h-96">
+				<Text type="danger">{error}</Text>
+			</div>
+		);
+	}
 
 	return (
 		<div className="p-4">

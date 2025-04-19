@@ -9,31 +9,72 @@ import {
 	SmileOutlined,
 } from "@ant-design/icons";
 
+import analysisService from "@/api/services/analysisService";
 import StatCard from "@/pages/dashboard/workbench/stat-card";
 import { themeVars } from "@/theme/theme.css";
+import type { IntentQueryResponse } from "@/types/analysis";
 import { Line, Pie } from "@ant-design/plots";
-import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
+import { Card, Col, Divider, Progress, Row, Spin, Statistic, Table, Tag, Tooltip, Typography } from "antd";
+import { useEffect, useState } from "react";
 
 const { Title, Paragraph, Text } = Typography;
 
 const IntentQueryTrends = () => {
-	// Sample data for the pie chart - Query Distribution
-	const queryData = [
-		{ type: "Product Search", value: 40 },
-		{ type: "Technical Support", value: 25 },
-		{ type: "Pricing Inquiry", value: 20 },
-		{ type: "Feature Request", value: 15 },
-	];
+	const [loading, setLoading] = useState(true);
+	const [data, setData] = useState<IntentQueryResponse | null>(null);
+	const [error, setError] = useState<string | null>(null);
 
-	// Sample data for the line chart - Query Volume Trend
-	const trendData = [
-		{ date: "2024-01", value: 1200 },
-		{ date: "2024-02", value: 1350 },
-		{ date: "2024-03", value: 1280 },
-		{ date: "2024-04", value: 1500 },
-		{ date: "2024-05", value: 1420 },
-		{ date: "2024-06", value: 1600 },
-	];
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				const response = await analysisService.getIntentQueryTrends();
+				setData(response);
+				setError(null);
+			} catch (err) {
+				setError(err instanceof Error ? err.message : "Failed to fetch data");
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	// Transform API data for the pie chart - Query Distribution
+	const queryData = data?.trends.reduce((acc, trend) => {
+		for (const [type, value] of Object.entries(trend.intents)) {
+			const existingType = acc.find(item => item.type === type);
+			if (existingType) {
+				existingType.value += value;
+			} else {
+				acc.push({ type, value });
+			}
+		}
+		return acc;
+	}, [] as { type: string; value: number }[]) || [];
+
+	// Transform API data for the line chart - Query Volume Trend
+	const trendData = data?.trends.map(trend => ({
+		date: trend.date,
+		value: trend.total_queries,
+	})) || [];
+
+	// Calculate summary statistics
+	const totalQueries = data?.trends.reduce((sum, trend) => sum + trend.total_queries, 0) || 0;
+	const avgQueriesPerDay = totalQueries / (data?.trends.length || 1);
+	const successRate = 92.5; // This would come from the API in a real implementation
+	const userSatisfaction = 4.6; // This would come from the API in a real implementation
+
+	// Transform API data for the table
+	const tableData = queryData.map((item, index) => ({
+		key: String(index + 1),
+		queryType: item.type,
+		count: item.value,
+		avgResponseTime: "1.8s", // This would come from the API in a real implementation
+		successRate: 90 + Math.random() * 10, // This would come from the API in a real implementation
+		satisfaction: 4 + Math.random(), // This would come from the API in a real implementation
+	}));
 
 	const pieConfig = {
 		data: queryData,
@@ -119,32 +160,21 @@ const IntentQueryTrends = () => {
 		},
 	];
 
-	const tableData = [
-		{
-			key: "1",
-			queryType: "Product Search",
-			count: 1250,
-			avgResponseTime: "1.2s",
-			successRate: 95,
-			satisfaction: 4.5,
-		},
-		{
-			key: "2",
-			queryType: "Technical Support",
-			count: 850,
-			avgResponseTime: "2.5s",
-			successRate: 88,
-			satisfaction: 4.2,
-		},
-		{
-			key: "3",
-			queryType: "Pricing Inquiry",
-			count: 650,
-			avgResponseTime: "1.8s",
-			successRate: 92,
-			satisfaction: 4.7,
-		},
-	];
+	if (loading) {
+		return (
+			<div className="flex h-full w-full items-center justify-center">
+				<Spin size="large" />
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="flex h-full w-full items-center justify-center">
+				<Text type="danger">{error}</Text>
+			</div>
+		);
+	}
 
 	return (
 		<div className="p-4">
@@ -168,8 +198,19 @@ const IntentQueryTrends = () => {
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={totalQueries.toLocaleString()}
+						subtitle="Total Queries"
+						style={{
+							color: themeVars.colors.palette.primary.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.primary.defaultChannel} / .2)`,
+						}}
+					/>
+				</Col>
+				<Col span={6}>
+					<StatCard
+						cover={glass_bag}
+						title="1.8s"
+						subtitle="Avg Response Time"
 						style={{
 							color: themeVars.colors.palette.success.dark,
 							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
@@ -179,33 +220,22 @@ const IntentQueryTrends = () => {
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={`${successRate}%`}
+						subtitle="Success Rate"
 						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+							color: themeVars.colors.palette.warning.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.warning.defaultChannel} / .2)`,
 						}}
 					/>
 				</Col>
 				<Col span={6}>
 					<StatCard
 						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
+						title={`${userSatisfaction}/5`}
+						subtitle="User Satisfaction"
 						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
-						}}
-					/>
-				</Col>
-				<Col span={6}>
-					<StatCard
-						cover={glass_bag}
-						title="714k"
-						subtitle="Weekly Sales"
-						style={{
-							color: themeVars.colors.palette.success.dark,
-							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+							color: themeVars.colors.palette.info.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.info.defaultChannel} / .2)`,
 						}}
 					/>
 				</Col>

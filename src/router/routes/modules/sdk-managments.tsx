@@ -7,6 +7,7 @@ import { CircleLoading } from "@/components/loading";
 import type { AppRouteObject } from "#/router";
 
 const SetupPage = lazy(() => import("@/pages/sdk_management/setup"));
+const IndexPage = lazy(() => import("@/pages/sdk_management/index"));
 // const AccountPage = lazy(() => import("@/pages/sdk_management/user/account"));
 
 // const OrganizationPage = lazy(() => import("@/pages/sdk_management/system/organization"));
@@ -35,7 +36,7 @@ const sdk_management: AppRouteObject = {
 		},
 		{
 			path: "index",
-			element: <SetupPage />,
+			element: <IndexPage />,
 			meta: { label: "sys.menu.sdk_management.index", key: "/sdk_management/index" },
 		},
 		{

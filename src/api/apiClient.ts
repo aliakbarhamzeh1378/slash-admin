@@ -74,7 +74,7 @@ axiosInstance.interceptors.response.use(
 	},
 );
 
-class APIClient {
+export class APIClient {
 	get<T = any>(config: AxiosRequestConfig): Promise<T> {
 		return this.request({ ...config, method: "GET" });
 	}
@@ -98,11 +98,12 @@ class APIClient {
 				.then((res: AxiosResponse<Result>) => {
 					resolve(res as unknown as Promise<T>);
 				})
-				.catch((e: Error | AxiosError) => {
-					reject(e);
+				.catch((error: AxiosError<Result>) => {
+					reject(error);
 				});
 		});
 	}
 }
 
-export default new APIClient();
+const apiClient = new APIClient();
+export default apiClient;

@@ -24,6 +24,10 @@ class ExtractDataRequest(BaseModel):
     store_url: str
     platform: str
 
+class SdkDashboardResponse(BaseModel):
+    stats: dict
+    recent_activities: list
+
 @router.post("/validate-connection", response_model=dict)
 def validate_connection(
     *,
@@ -246,4 +250,63 @@ def extract_platform_data(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to extract data: {str(e)}"
-        ) 
+        )
+
+@router.get("/dashboard", response_model=SdkDashboardResponse)
+def get_sdk_dashboard(
+    *,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+) -> Any:
+    """
+    Get SDK management dashboard data including statistics and recent activities.
+    """
+    # Get SDK data for the current user
+    sdk_data = db.query(SdkWizardData).filter(SdkWizardData.user_id == current_user.id).first()
+    
+    # If no SDK data exists, return default values
+    if not sdk_data:
+        return {
+            "stats": {
+                "totalIntegrations": 0,
+                "activeIntegrations": 0,
+                "pendingUpdates": 0,
+                "healthScore": 0
+            },
+            "recent_activities": []
+        }
+    
+    # Calculate statistics based on SDK data
+    # This is a simplified example - in a real app, you would calculate these values
+    # based on actual data from your database
+    stats = {
+        "totalIntegrations": 1,  # At least one integration exists
+        "activeIntegrations": 1,  # Assuming the integration is active
+        "pendingUpdates": 0,      # No pending updates by default
+        "healthScore": 100        # Perfect health by default
+    }
+    
+    # Generate recent activities based on SDK data
+    # In a real app, you would store and retrieve actual activity logs
+    recent_activities = [
+        {
+            "id": 1,
+            "type": "integration",
+            "message": f"Integration added: {sdk_data.platform}",
+            "time": "Just now"
+        }
+    ]
+    
+    # If data extraction has been completed, add that activity
+    if sdk_data.is_data_extracted:
+        recent_activities.append({
+            "id": 2,
+            "type": "update",
+            "message": f"Data extracted from {sdk_data.platform}",
+            "time": "1 hour ago"
+        })
+    
+    return {
+        "stats": stats,
+        "recent_activities": recent_activities
+    } 
