@@ -1,14 +1,17 @@
-import { Card, Row, Col, Statistic, Table, Progress, Tooltip, Tag, Typography, Divider } from "antd";
-import { Area, Pie } from "@ant-design/plots";
+import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
+import StatCard from "@/pages/dashboard/workbench/stat-card";
+import { themeVars } from "@/theme/theme.css";
 import {
-	ArrowUpOutlined,
 	ArrowDownOutlined,
-	InfoCircleOutlined,
+	ArrowUpOutlined,
 	DollarOutlined,
-	ShoppingOutlined,
-	ShoppingCartOutlined,
+	InfoCircleOutlined,
 	PercentageOutlined,
+	ShoppingCartOutlined,
+	ShoppingOutlined,
 } from "@ant-design/icons";
+import { Area, Pie } from "@ant-design/plots";
+import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -145,7 +148,7 @@ const SalesPerformance = () => {
 	return (
 		<div className="p-4">
 			<div className="mb-4">
-				<Title level={2} style={{ color: "#52c41a" }}>
+				<Title level={2} >
 					<span role="img" aria-label="sales">
 						💰
 					</span>{" "}
@@ -153,7 +156,7 @@ const SalesPerformance = () => {
 				</Title>
 				<Paragraph>
 					<Tooltip title="Analyze your sales data to track revenue, order volume, and average order value. Identify trends and opportunities to optimize pricing and inventory strategies.">
-						<InfoCircleOutlined className="mr-2" style={{ color: "#52c41a" }} />
+						<InfoCircleOutlined className="mr-2" />
 					</Tooltip>
 					<Text strong>Monitor key sales metrics</Text> to understand your business performance and identify
 					opportunities for growth and optimization.
@@ -162,106 +165,48 @@ const SalesPerformance = () => {
 			</div>
 			<Row gutter={[16, 16]}>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<DollarOutlined style={{ marginRight: "8px", color: "#52c41a" }} /> Total Revenue
-								</>
-							}
-							value={112893}
-							precision={2}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							prefix="$"
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+12.5%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<ShoppingOutlined style={{ marginRight: "8px", color: "#1890ff" }} /> Total Orders
-								</>
-							}
-							value={670}
-							precision={0}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+8.3%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<ShoppingCartOutlined style={{ marginRight: "8px", color: "#faad14" }} /> Average Order Value
-								</>
-							}
-							value={168.5}
-							precision={2}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							prefix="$"
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+4.2%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<PercentageOutlined style={{ marginRight: "8px", color: "#cf1322" }} /> Conversion Rate
-								</>
-							}
-							value={3.2}
-							precision={1}
-							valueStyle={{ color: "#cf1322", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="red" style={{ marginLeft: "8px" }}>
-										-0.5%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={16}>
 					<Card

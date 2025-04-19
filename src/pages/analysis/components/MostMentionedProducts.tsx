@@ -1,6 +1,6 @@
-import { Card, Row, Col, Table, Statistic, Progress, Tooltip, Tag, Typography, Divider } from "antd";
+import { ArrowDownOutlined, ArrowUpOutlined, InfoCircleOutlined, MessageOutlined } from "@ant-design/icons";
 import { Bar } from "@ant-design/plots";
-import { ArrowUpOutlined, ArrowDownOutlined, InfoCircleOutlined, MessageOutlined } from "@ant-design/icons";
+import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -95,18 +95,15 @@ const MostMentionedProducts = () => {
 	return (
 		<div className="p-4">
 			<div className="mb-4">
-				<Title level={2} style={{ color: "#faad14" }}>
-					<span role="img" aria-label="mentions">
-						💬
-					</span>{" "}
+				<Title level={2}>
+					<span role="img" aria-label="mentions">💬</span>{" "}
 					Most Mentioned Products
 				</Title>
 				<Paragraph>
 					<Tooltip title="Identify which products are most frequently discussed by users in conversations and queries. Use these insights to prioritize inventory, marketing, and product development efforts.">
-						<InfoCircleOutlined className="mr-2" style={{ color: "#faad14" }} />
+						<InfoCircleOutlined className="mr-2" />
 					</Tooltip>
-					<Text strong>Track which products are most frequently mentioned</Text> in user conversations to understand
-					customer interest and optimize your product strategy.
+					<Text strong>Track which products are most frequently mentioned</Text> in user conversations to understand customer interest and optimize your product strategy.
 				</Paragraph>
 				<Divider style={{ margin: "12px 0" }} />
 			</div>

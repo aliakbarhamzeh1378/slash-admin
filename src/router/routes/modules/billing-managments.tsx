@@ -1,13 +1,14 @@
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { Navigate, Outlet } from "react-router";
 
-import { SvgIcon } from "@/components/icon";
+import { Iconify } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-const ProfilePage = lazy(() => import("@/pages/billing_plans/user/profile"));
-// const AccountPage = lazy(() => import("@/pages/billing_plans/user/account"));
+const BillingPlansIndex = lazy(() => import("@/pages/billing_plans/user/index"));
+const UpgradePlans = lazy(() => import("@/pages/billing_plans/user/upgrade"));
+const BillingHistory = lazy(() => import("@/pages/billing_plans/user/history"));
 
 // const OrganizationPage = lazy(() => import("@/pages/billing_plans/system/organization"));
 // const PermissioPage = lazy(() => import("@/pages/billing_plans/system/permission"));
@@ -24,7 +25,7 @@ const billing_plans: AppRouteObject = {
 	),
 	meta: {
 		label: "sys.menu.billing_plans.index",
-		icon: <SvgIcon icon="ic-user" className="ant-menu-item-icon" size="24" />,
+		icon: <Iconify icon="icon-park-outline:paper-money-two" className="ant-menu-item-icon" size="24" />,
 		key: "billinge_management",
 	},
 
@@ -35,84 +36,20 @@ const billing_plans: AppRouteObject = {
 		},
 		{
 			path: "index",
-			element: <ProfilePage />,
+			element: <BillingPlansIndex />,
 			meta: { label: "sys.menu.billing_plans.index", key: "/billing_plans/index" },
 		},
 		{
-			path: "setup",
-			element: <ProfilePage />,
-			meta: { label: "sys.menu.billing_plans.plan", key: "/billing_plans/plan/" },
+			path: "upgrade",
+			element: <UpgradePlans />,
+			meta: { label: "sys.menu.billing_plans.upgrade", key: "/billing_plans/upgrade" },
 		},
 		{
-			path: "setup",
-			element: <ProfilePage />,
-			meta: { label: "sys.menu.billing_plans.upgrade", key: "/billing_plans/upgrade/" },
+			path: "history",
+			element: <BillingHistory />,
+			meta: { label: "sys.menu.billing_plans.history", key: "/billing_plans/history" },
 		},
-		{
-			path: "setup",
-			element: <ProfilePage />,
-			meta: { label: "sys.menu.billing_plans.history", key: "/billing_plans/history/" },
-		},
-	],
-	// children: [
-	// 	{
-	// 		index: true,
-	// 		element: <Navigate to="user" replace />,
-	// 	},
-	// 	{
-	// 		path: "user",
-	// 		meta: { label: "sys.menu.user.index", key: "/analysis/user" },
-	// 		children: [
-	// 			{
-	// 				index: true,
-	// 				element: <Navigate to="profile" replace />,
-	// 			},
-	// 			{
-	// 				path: "profile",
-	// 				element: <ProfilePage />,
-	// 				meta: {
-	// 					label: "sys.menu.user.profile",
-	// 					key: "/analysis/user/profile",
-	// 				},
-	// 			},
-	// 			{
-	// 				path: "account",
-	// 				element: <AccountPage />,
-	// 				meta: {
-	// 					label: "sys.menu.user.account",
-	// 					key: "/analysis/user/account",
-	// 				},
-	// 			},
-	// 		],
-	// 	},
-	// 	{
-	// 		path: "system",
-	// 		meta: { label: "sys.menu.system.index", key: "/analysis/system" },
-	// 		children: [
-	// 			{
-	// 				path: "organization",
-	// 				element: <OrganizationPage />,
-	// 				meta: {
-	// 					label: "sys.menu.system.organization",
-	// 					key: "/analysis/system/organization",
-	// 				},
-	// 			},
-	// 			{
-	// 				path: "permission",
-	// 				element: <PermissioPage />,
-	// 				meta: {
-	// 					label: "sys.menu.system.permission",
-	// 					key: "/analysis/system/permission",
-	// 				},
-	// 			},
-	// 		],
-	// 	},
-	// 	{
-	// 		path: "blog",
-	// 		element: <Blog />,
-	// 		meta: { label: "sys.menu.blog", key: "/analysis/blog" },
-	// 	},
-	// ],
+	]
 };
 
 export default billing_plans;

@@ -1,13 +1,17 @@
-import { Card, Row, Col, Table, Statistic, Progress, Tooltip, Tag, Typography, Divider } from "antd";
-import { Bar, Line } from "@ant-design/plots";
+import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
+import StatCard from "@/pages/dashboard/workbench/stat-card";
+
+import { themeVars } from "@/theme/theme.css";
 import {
-	ArrowUpOutlined,
 	ArrowDownOutlined,
-	InfoCircleOutlined,
-	EyeOutlined,
-	ShoppingCartOutlined,
+	ArrowUpOutlined,
 	ClockCircleOutlined,
+	EyeOutlined,
+	InfoCircleOutlined,
+	ShoppingCartOutlined,
 } from "@ant-design/icons";
+import { Bar, Line } from "@ant-design/plots";
+import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -173,7 +177,7 @@ const ProductEngagementTrends = () => {
 	return (
 		<div className="p-4">
 			<div className="mb-4">
-				<Title level={2} style={{ color: "#1890ff" }}>
+				<Title level={2}>
 					<span role="img" aria-label="chart">
 						📊
 					</span>{" "}
@@ -181,7 +185,7 @@ const ProductEngagementTrends = () => {
 				</Title>
 				<Paragraph>
 					<Tooltip title="Track and analyze how users interact with your products, including views, clicks, and conversion rates. Use this data to optimize product listings and improve user engagement.">
-						<InfoCircleOutlined className="mr-2" style={{ color: "#1890ff" }} />
+						<InfoCircleOutlined className="mr-2" />
 					</Tooltip>
 					<Text strong>Monitor product performance metrics</Text> to understand user behavior and optimize your product
 					catalog for better engagement and conversions.
@@ -189,71 +193,38 @@ const ProductEngagementTrends = () => {
 				<Divider style={{ margin: "12px 0" }} />
 			</div>
 			<Row gutter={[16, 16]}>
-				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<EyeOutlined style={{ marginRight: "8px", color: "#1890ff" }} /> Total Product Views
-								</>
-							}
-							value={37000}
-							precision={0}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							prefix={<ArrowUpOutlined />}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+12.5%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+				<Col span={8}>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
-				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<ShoppingCartOutlined style={{ marginRight: "8px", color: "#faad14" }} /> Conversion Rate
-								</>
-							}
-							value={15.2}
-							precision={1}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix="%"
-							prefix={<ArrowUpOutlined />}
-						/>
-					</Card>
+				<Col span={8}>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
-				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<ClockCircleOutlined style={{ marginRight: "8px", color: "#722ed1" }} /> Avg. Session Duration
-								</>
-							}
-							value={2.5}
-							precision={1}
-							valueStyle={{ color: "#cf1322", fontSize: "24px" }}
-							suffix="min"
-							prefix={<ArrowDownOutlined />}
-						/>
-					</Card>
+				<Col span={8}>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={12}>
 					<Card
@@ -267,7 +238,7 @@ const ProductEngagementTrends = () => {
 						}
 						extra={
 							<Tooltip title="Product category engagement metrics">
-								<InfoCircleOutlined style={{ color: "#1890ff" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -287,7 +258,7 @@ const ProductEngagementTrends = () => {
 						}
 						extra={
 							<Tooltip title="Monthly engagement trend">
-								<InfoCircleOutlined style={{ color: "#1890ff" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -307,7 +278,7 @@ const ProductEngagementTrends = () => {
 						}
 						extra={
 							<Tooltip title="Detailed product engagement metrics">
-								<InfoCircleOutlined style={{ color: "#1890ff" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}

@@ -1,7 +1,7 @@
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { Navigate, Outlet } from "react-router";
 
-import { SvgIcon } from "@/components/icon";
+import { Iconify } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
@@ -23,7 +23,7 @@ const analysis: AppRouteObject = {
 	),
 	meta: {
 		label: "sys.menu.analysis.index",
-		icon: <SvgIcon icon="ic-analysis" className="ant-menu-item-icon" size="24" />,
+		icon: <Iconify icon="icon-park-outline:market-analysis" className="ant-menu-item-icon" size="24" />,
 		key: "/analysis",
 	},
 	children: [

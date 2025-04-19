@@ -1,6 +1,9 @@
+import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
 import { Card, Row, Col, Statistic, Table, Progress, Tooltip, Tag, Typography } from "antd";
 import { Line, Area } from "@ant-design/plots";
 import { ArrowUpOutlined, ArrowDownOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { themeVars } from "@/theme/theme.css";
+import StatCard from "@/pages/dashboard/workbench/stat-card";
 
 const { Title, Paragraph } = Typography;
 
@@ -159,64 +162,48 @@ const SystemPerformance = () => {
 			</div>
 			<Row gutter={[16, 16]}>
 				<Col span={6}>
-					<Card>
-						<Statistic
-							title="CPU Usage"
-							value={45}
-							precision={1}
-							valueStyle={{ color: "#3f8600" }}
-							suffix={
-								<Tooltip title="Compared to last hour">
-									<span style={{ fontSize: "14px", marginLeft: "8px" }}>-5%</span>
-								</Tooltip>
-							}
-						/>
-					</Card>
+				<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card>
-						<Statistic
-							title="Memory Usage"
-							value={60}
-							precision={1}
-							valueStyle={{ color: "#cf1322" }}
-							suffix={
-								<Tooltip title="Compared to last hour">
-									<span style={{ fontSize: "14px", marginLeft: "8px" }}>+10%</span>
-								</Tooltip>
-							}
-						/>
-					</Card>
+				<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card>
-						<Statistic
-							title="Response Time"
-							value={120}
-							precision={0}
-							valueStyle={{ color: "#3f8600" }}
-							suffix={
-								<Tooltip title="Compared to last hour">
-									<span style={{ fontSize: "14px", marginLeft: "8px" }}>-15%</span>
-								</Tooltip>
-							}
-						/>
-					</Card>
+				<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card>
-						<Statistic
-							title="Error Rate"
-							value={0.5}
-							precision={2}
-							valueStyle={{ color: "#3f8600" }}
-							suffix={
-								<Tooltip title="Compared to last hour">
-									<span style={{ fontSize: "14px", marginLeft: "8px" }}>-0.2%</span>
-								</Tooltip>
-							}
-						/>
-					</Card>
+				<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={12}>
 					<Card

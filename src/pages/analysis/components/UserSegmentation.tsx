@@ -1,14 +1,18 @@
-import { Card, Row, Col, Table, Statistic, Progress, Tooltip, Tag, Typography, Divider } from "antd";
-import { Column, Pie } from "@ant-design/plots";
+import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
+import StatCard from "@/pages/dashboard/workbench/stat-card";
+import { themeVars } from "@/theme/theme.css";
+
 import {
-	ArrowUpOutlined,
 	ArrowDownOutlined,
+	ArrowUpOutlined,
+	ClockCircleOutlined,
 	InfoCircleOutlined,
+	RetweetOutlined,
 	TeamOutlined,
 	UserOutlined,
-	ClockCircleOutlined,
-	RetweetOutlined,
 } from "@ant-design/icons";
+import { Column, Pie } from "@ant-design/plots";
+import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -139,7 +143,7 @@ const UserSegmentation = () => {
 	return (
 		<div className="p-4">
 			<div className="mb-4">
-				<Title level={2} style={{ color: "#1890ff" }}>
+				<Title level={2}>
 					<span role="img" aria-label="users">
 						👥
 					</span>{" "}
@@ -147,7 +151,7 @@ const UserSegmentation = () => {
 				</Title>
 				<Paragraph>
 					<Tooltip title="Analyze user behavior patterns to segment your audience into meaningful groups. Use these insights to personalize marketing efforts and improve user engagement.">
-						<InfoCircleOutlined className="mr-2" style={{ color: "#1890ff" }} />
+						<InfoCircleOutlined className="mr-2" />
 					</Tooltip>
 					<Text strong>Identify and analyze different user segments</Text> to understand behavior patterns and optimize
 					your marketing and product strategies.
@@ -156,104 +160,48 @@ const UserSegmentation = () => {
 			</div>
 			<Row gutter={[16, 16]}>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<TeamOutlined style={{ marginRight: "8px", color: "#1890ff" }} /> Total Users
-								</>
-							}
-							value={9500}
-							precision={0}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+8.5%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<UserOutlined style={{ marginRight: "8px", color: "#52c41a" }} /> Active Users
-								</>
-							}
-							value={4500}
-							precision={0}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+12.3%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<ClockCircleOutlined style={{ marginRight: "8px", color: "#faad14" }} /> Avg. Session Duration
-								</>
-							}
-							value={16}
-							precision={1}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+2.5 min
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
-				</Col>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
+					</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<RetweetOutlined style={{ marginRight: "8px", color: "#722ed1" }} /> Retention Rate
-								</>
-							}
-							value={70}
-							precision={1}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+5.2%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={12}>
 					<Card
@@ -267,7 +215,7 @@ const UserSegmentation = () => {
 						}
 						extra={
 							<Tooltip title="Distribution of user segments">
-								<InfoCircleOutlined style={{ color: "#1890ff" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -287,7 +235,7 @@ const UserSegmentation = () => {
 						}
 						extra={
 							<Tooltip title="Distribution of user actions">
-								<InfoCircleOutlined style={{ color: "#1890ff" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -307,7 +255,7 @@ const UserSegmentation = () => {
 						}
 						extra={
 							<Tooltip title="Detailed segment metrics">
-								<InfoCircleOutlined style={{ color: "#1890ff" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -322,7 +270,7 @@ const UserSegmentation = () => {
 					</Card>
 				</Col>
 			</Row>
-		</div>
+		</div >
 	);
 };
 

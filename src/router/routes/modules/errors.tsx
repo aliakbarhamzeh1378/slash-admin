@@ -29,6 +29,7 @@ const errors: AppRouteObject[] = [
 				/>
 			),
 			key: "/error",
+			hideMenu: true,
 		},
 		children: [
 			{

@@ -121,11 +121,12 @@
 			},
 			"analysis": {
 				"index": "Analysis",
-				"user": "User Behavior Insights",
 				"product": "Product Engagement Trends",
+				"sales": "Sales Performance",
 				"intent": "Intent & Query Trends",
-				"user_segmetation": "User Segmentation",
-				"system": "System Performance"
+				"user_segmentation": "User Segmentation",
+				"system": "System Performance",
+				"mentions": "Most Mentions Product"
 			},
 			"system": {
 				"index": "System",

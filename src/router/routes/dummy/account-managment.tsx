@@ -3,29 +3,29 @@ import { Outlet } from "react-router";
 
 import { Iconify } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
-import UserManagementPage from "@/pages/user_management";
 
 import type { AppRouteObject } from "#/router";
 
-// const AccountPage = lazy(() => import("@/pages/user_management/user/account"));
+// const ProfilePage = lazy(() => import("@/pages/account_management/user/profile"));
+// const AccountPage = lazy(() => import("@/pages/account_management/user/account"));
 
-// const OrganizationPage = lazy(() => import("@/pages/user_management/system/organization"));
-// const PermissioPage = lazy(() => import("@/pages/user_management/system/permission"));
+// const OrganizationPage = lazy(() => import("@/pages/account_management/system/organization"));
+// const PermissioPage = lazy(() => import("@/pages/account_management/system/permission"));
 
-// const Blog = lazy(() => import("@/pages/user_management/blog"));
+// const Blog = lazy(() => import("@/pages/account_management/blog"));
 
-const user_management: AppRouteObject = {
+const account_management: AppRouteObject = {
 	order: 2,
-	path: "user_management",
+	path: "account_management",
 	element: (
 		<Suspense fallback={<CircleLoading />}>
-			<UserManagementPage />
+			<Outlet />
 		</Suspense>
 	),
 	meta: {
-		label: "sys.menu.user_management.index",
-		icon: <Iconify icon="icon-park-outline:every-user" className="ant-menu-item-icon" size="24" />,
-		key: "/user_management",
+		label: "sys.menu.account_management",
+		icon: <Iconify icon="icon-park-outline:setting-two" className="ant-menu-item-icon" size="24" />,
+		key: "/account_management",
 	},
 	// children: [
 	// 	{
@@ -88,4 +88,4 @@ const user_management: AppRouteObject = {
 	// ],
 };
 
-export default user_management;
+export default account_management;

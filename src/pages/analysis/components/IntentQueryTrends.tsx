@@ -1,14 +1,18 @@
-import { Card, Row, Col, Table, Statistic, Progress, Tooltip, Tag, Typography, Divider } from "antd";
-import { Pie, Line } from "@ant-design/plots";
+import glass_bag from "@/assets/images/glass/ic_glass_bag.png";
 import {
-	ArrowUpOutlined,
 	ArrowDownOutlined,
+	ArrowUpOutlined,
+	CheckCircleOutlined,
+	ClockCircleOutlined,
 	InfoCircleOutlined,
 	MessageOutlined,
-	ClockCircleOutlined,
-	CheckCircleOutlined,
 	SmileOutlined,
 } from "@ant-design/icons";
+
+import StatCard from "@/pages/dashboard/workbench/stat-card";
+import { themeVars } from "@/theme/theme.css";
+import { Line, Pie } from "@ant-design/plots";
+import { Card, Col, Divider, Progress, Row, Statistic, Table, Tag, Tooltip, Typography } from "antd";
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -145,7 +149,7 @@ const IntentQueryTrends = () => {
 	return (
 		<div className="p-4">
 			<div className="mb-4">
-				<Title level={2} style={{ color: "#722ed1" }}>
+				<Title level={2}>
 					<span role="img" aria-label="intent">
 						🎯
 					</span>{" "}
@@ -153,7 +157,7 @@ const IntentQueryTrends = () => {
 				</Title>
 				<Paragraph>
 					<Tooltip title="Analyze user queries to understand customer intent, improve response accuracy, and optimize your chatbot's performance. Track success rates and user satisfaction to enhance the customer experience.">
-						<InfoCircleOutlined className="mr-2" style={{ color: "#722ed1" }} />
+						<InfoCircleOutlined className="mr-2" />
 					</Tooltip>
 					<Text strong>Monitor and analyze user queries</Text> to improve your chatbot's understanding of customer
 					intent and enhance response quality.
@@ -162,104 +166,48 @@ const IntentQueryTrends = () => {
 			</div>
 			<Row gutter={[16, 16]}>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<MessageOutlined style={{ marginRight: "8px", color: "#722ed1" }} /> Total Queries
-								</>
-							}
-							value={2750}
-							precision={0}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+15.2%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<ClockCircleOutlined style={{ marginRight: "8px", color: "#1890ff" }} /> Avg. Response Time
-								</>
-							}
-							value={1.8}
-							precision={1}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										-0.3s
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<CheckCircleOutlined style={{ marginRight: "8px", color: "#52c41a" }} /> Success Rate
-								</>
-							}
-							value={91.5}
-							precision={1}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+2.1%
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={6}>
-					<Card
-						hoverable
-						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
-						bodyStyle={{ padding: "20px" }}
-					>
-						<Statistic
-							title={
-								<>
-									<SmileOutlined style={{ marginRight: "8px", color: "#faad14" }} /> User Satisfaction
-								</>
-							}
-							value={4.4}
-							precision={1}
-							valueStyle={{ color: "#3f8600", fontSize: "24px" }}
-							suffix={
-								<Tooltip title="Compared to last month">
-									<Tag color="green" style={{ marginLeft: "8px" }}>
-										+0.2
-									</Tag>
-								</Tooltip>
-							}
-						/>
-					</Card>
+					<StatCard
+						cover={glass_bag}
+						title="714k"
+						subtitle="Weekly Sales"
+						style={{
+							color: themeVars.colors.palette.success.dark,
+							backgroundColor: `rgba(${themeVars.colors.palette.success.defaultChannel} / .2)`,
+						}}
+					/>
 				</Col>
 				<Col span={12}>
 					<Card
@@ -273,7 +221,7 @@ const IntentQueryTrends = () => {
 						}
 						extra={
 							<Tooltip title="Distribution of query types">
-								<InfoCircleOutlined style={{ color: "#722ed1" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -293,7 +241,7 @@ const IntentQueryTrends = () => {
 						}
 						extra={
 							<Tooltip title="Monthly query volume trend">
-								<InfoCircleOutlined style={{ color: "#722ed1" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}
@@ -313,7 +261,7 @@ const IntentQueryTrends = () => {
 						}
 						extra={
 							<Tooltip title="Detailed query performance metrics">
-								<InfoCircleOutlined style={{ color: "#722ed1" }} />
+								<InfoCircleOutlined />
 							</Tooltip>
 						}
 						style={{ borderRadius: "8px", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}

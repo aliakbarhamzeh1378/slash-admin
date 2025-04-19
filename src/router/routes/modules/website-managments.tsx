@@ -1,13 +1,15 @@
-import { lazy, Suspense } from "react";
+import { Suspense, lazy } from "react";
 import { Navigate, Outlet } from "react-router";
 
-import { SvgIcon } from "@/components/icon";
+import { Iconify } from "@/components/icon";
 import { CircleLoading } from "@/components/loading";
 
 import type { AppRouteObject } from "#/router";
 
-const ProfilePage = lazy(() => import("@/pages/website_management/user/profile"));
-// const AccountPage = lazy(() => import("@/pages/website_management/user/account"));
+const WebsiteManagementIndex = lazy(() => import("@/pages/website_management/index"));
+const WebsiteSetup = lazy(() => import("@/pages/website_management/setup"));
+const LLMManagement = lazy(() => import("@/pages/website_management/llm"));
+const ExportManagement = lazy(() => import("@/pages/website_management/export"));
 
 // const OrganizationPage = lazy(() => import("@/pages/website_management/system/organization"));
 // const PermissioPage = lazy(() => import("@/pages/website_management/system/permission"));
@@ -24,7 +26,7 @@ const website_management: AppRouteObject = {
 	),
 	meta: {
 		label: "sys.menu.website_management.index",
-		icon: <SvgIcon icon="ic-user" className="ant-menu-item-icon" size="24" />,
+		icon: <Iconify icon="icon-park-outline:browser-safari" className="ant-menu-item-icon" size="24" />,
 		key: "/website_management",
 	},
 
@@ -35,22 +37,22 @@ const website_management: AppRouteObject = {
 		},
 		{
 			path: "index",
-			element: <ProfilePage />,
-			meta: { label: "sys.menu.website_management.user", key: "/website_management" },
+			element: <WebsiteManagementIndex />,
+			meta: { label: "sys.menu.website_management.user", key: "/website_management/index" },
 		},
 		{
 			path: "setup",
-			element: <ProfilePage />,
+			element: <WebsiteSetup />,
 			meta: { label: "sys.menu.website_management.setup", key: "/website_management/setup" },
 		},
 		{
 			path: "llm",
-			element: <ProfilePage />,
+			element: <LLMManagement />,
 			meta: { label: "sys.menu.website_management.llm", key: "/website_management/llm" },
 		},
 		{
 			path: "export",
-			element: <ProfilePage />,
+			element: <ExportManagement />,
 			meta: { label: "sys.menu.website_management.export", key: "/website_management/export" },
 		},
 	],
