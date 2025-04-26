@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 
-from pydantic import AnyHttpUrl, EmailStr, validator
+from pydantic import AnyHttpUrl, EmailStr
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -16,14 +16,12 @@ class Settings(BaseSettings):
     ]
     ALGORITHM: str = "HS256"  # Adding the missing ALGORITHM setting
 
-    @validator("BACKEND_CORS_ORIGINS", pre=True)
-    def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
-        if isinstance(v, str):
-            return [origin.strip() for origin in v.split(",")]
-        return v
+    # Airflow settings
+    AIRFLOW_URL: str = "http://localhost:8080"
+    AIRFLOW_BASIC_AUTH: str = "YWRtaW46YWRtaW4="  # Base64 encoded "admin:admin"
 
     class Config:
         case_sensitive = True
-        env_file = None
+        env_file = None  # Disable .env file loading
 
 settings = Settings() 

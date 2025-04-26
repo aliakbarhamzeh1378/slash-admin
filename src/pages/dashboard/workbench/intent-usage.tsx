@@ -1,26 +1,55 @@
-import { Typography } from "antd";
+import { Skeleton, Typography } from "antd";
+import { useEffect, useState } from "react";
 
+import dashboardService, { type IntentUsageData } from "@/api/services/dashboardService";
 import Card from "@/components/card";
 import Chart from "@/components/chart/chart";
 import useChart from "@/components/chart/useChart";
 
 export default function IntentUsage() {
+	const [loading, setLoading] = useState(true);
+	const [data, setData] = useState<IntentUsageData>({
+		series: [],
+		labels: [],
+	});
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				const response = await dashboardService.getIntentUsage();
+				setData(response);
+			} catch (error) {
+				console.error("Error fetching intent usage data:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
 	return (
 		<Card className="flex-col">
 			<header className="self-start">
 				<Typography.Title level={5}>Today Intent Usage</Typography.Title>
 			</header>
 			<main>
-				<ChartDonutChart />
+				{loading ? (
+					<div className="flex justify-center items-center h-[360px]">
+						<Skeleton.Input active style={{ width: "100%", height: "100%" }} />
+					</div>
+				) : (
+					<ChartDonutChart series={data.series} labels={data.labels} />
+				)}
 			</main>
 		</Card>
 	);
 }
 
-const series = [44, 55, 13, 43, 22];
-function ChartDonutChart() {
+function ChartDonutChart({ series, labels }: { series: number[]; labels: string[] }) {
 	const chartOptions = useChart({
-		labels: ["Product Deep Dive", "Product Search", "Product Discovery", "Question About Store", "Normal Conversation"],
+		labels,
 		stroke: {
 			show: false,
 		},

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 import requests
@@ -17,8 +17,8 @@ router = APIRouter()
 class ConnectionValidationRequest(BaseModel):
     platform: str
     store_url: str
-    woo_commerce_secret_key: str | None = None
-    woo_commerce_client_key: str | None = None
+    woo_commerce_secret_key: Optional[str] = None
+    woo_commerce_client_key: Optional[str] = None
 
 class ExtractDataRequest(BaseModel):
     store_url: str
@@ -181,11 +181,41 @@ def complete_sdk_wizard(
     current_user: User = Depends(get_current_user)
 ) -> Any:
     """
-    Mark the SDK wizard as complete for the current user.
+    Mark the SDK wizard as complete for the current user and trigger the Airflow DAG.
     """
+    # Get the SDK wizard data
+    sdk_wizard_data = db.query(SdkWizardData).filter(SdkWizardData.user_id == current_user.id).first()
+    if not sdk_wizard_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="SDK wizard data not found"
+        )
+    
     # Update user's has_submitted_website flag
     current_user.has_submitted_website = True
     db.commit()
+    
+    # Prepare data for Airflow DAG
+    dag_data = {
+        "user_id": current_user.id,
+        "platform": sdk_wizard_data.platform,
+        "store_url": sdk_wizard_data.store_url,
+        "database_access": sdk_wizard_data.database_access,
+        "field_mappings": sdk_wizard_data.field_mappings,
+        "woo_commerce_secret_key": sdk_wizard_data.woo_commerce_secret_key,
+        "woo_commerce_client_key": sdk_wizard_data.woo_commerce_client_key,
+        "fields": sdk_wizard_data.fields,
+        "documentation_links": sdk_wizard_data.documentation_links,
+        "documentation_files": sdk_wizard_data.documentation_files
+    }
+    
+    # Trigger the Airflow DAG
+    from app.services.airflow_trigger import trigger_sdk_wizard_workflow
+    try:
+        trigger_sdk_wizard_workflow(dag_data)
+    except Exception as e:
+        # Log the error but don't fail the request
+        print(f"Error triggering Airflow DAG: {str(e)}")
     
     return {"message": "SDK wizard completed successfully"}
 
@@ -231,7 +261,7 @@ def extract_platform_data(
             sdk_wizard_data = db.query(SdkWizardData).filter(SdkWizardData.user_id == current_user.id).first()
             if sdk_wizard_data and first_product:
                 # Use the first product as a template for fields
-                sdk_wizard_data.fields = first_product
+                sdk_wizard_data.fields = [first_product]  # Store as a list
                 sdk_wizard_data.is_data_extracted = True
                 db.commit()
 

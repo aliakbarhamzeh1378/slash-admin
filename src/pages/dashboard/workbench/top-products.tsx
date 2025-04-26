@@ -1,20 +1,33 @@
 import { Space, Tag, Typography } from "antd";
 import Table, { type ColumnsType } from "antd/es/table";
+import { useEffect, useState } from "react";
 
+import dashboardService, { type TopProduct } from "@/api/services/dashboardService";
 import Card from "@/components/card";
 import { IconButton, Iconify } from "@/components/icon";
 import Scrollbar from "@/components/scrollbar";
 
-interface DataType {
-	key: string;
-	id: string;
-	category: string;
-	price: string;
-	status: string;
-}
-
 export default function TopProducts() {
-	const columns: ColumnsType<DataType> = [
+	const [loading, setLoading] = useState(true);
+	const [data, setData] = useState<TopProduct[]>([]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				setLoading(true);
+				const response = await dashboardService.getTopProducts();
+				setData(response);
+			} catch (error) {
+				console.error("Error fetching top products data:", error);
+			} finally {
+				setLoading(false);
+			}
+		};
+
+		fetchData();
+	}, []);
+
+	const columns: ColumnsType<TopProduct> = [
 		{
 			title: "InvoiceId",
 			dataIndex: "id",
@@ -57,44 +70,6 @@ export default function TopProducts() {
 		},
 	];
 
-	const data: DataType[] = [
-		{
-			key: "1",
-			id: "INV-1990",
-			category: "Android",
-			price: "$83.74",
-			status: "Paid",
-		},
-		{
-			key: "2",
-			id: "INV-1991",
-			category: "Mac",
-			price: "$97.14",
-			status: "Out of Date",
-		},
-		{
-			key: "3",
-			id: "INV-1992",
-			category: "Windows",
-			price: "$68.71",
-			status: "Progress",
-		},
-		{
-			key: "4",
-			id: "INV-1993",
-			category: "Android",
-			price: "$85.21",
-			status: "Paid",
-		},
-		{
-			key: "5",
-			id: "INV-1994",
-			category: "Mac",
-			price: "$53.17",
-			status: "Paid",
-		},
-	];
-
 	return (
 		<Card className="flex-col">
 			<header className="self-start">
@@ -102,7 +77,7 @@ export default function TopProducts() {
 			</header>
 			<main className="w-full">
 				<Scrollbar>
-					<Table columns={columns} dataSource={data} />
+					<Table columns={columns} dataSource={data} loading={loading} />
 				</Scrollbar>
 			</main>
 		</Card>

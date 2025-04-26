@@ -352,6 +352,7 @@ function PlatformSelectionStep({ formData, setFormData, isLoading, setIsLoading,
 			description: "WordPress-based e-commerce solution",
 			docsUrl: "https://woocommerce.com/document/woocommerce-rest-api/",
 			dataPreview: ["Products", "Categories", "Orders", "Customers", "Coupons"],
+			// disabled: true,
 			icon: (
 				<svg className="w-8 h-8 text-[#96588A]" viewBox="0 0 24 24" fill="currentColor">
 					<title>WooCommerce logo</title>
@@ -1512,10 +1513,11 @@ function FieldsMappingStep({ formData, setFormData, isLoading, setIsLoading, set
 									<button
 										type="button"
 										onClick={() => handleSetProductIdentifier(fieldName)}
-										className={`text-xs px-2 py-1 rounded-full ${isProductIdentifier(fieldName)
-											? "bg-primary text-white"
-											: "bg-gray-100 text-gray-600 hover:bg-gray-200"
-											}`}
+										className={`text-xs px-2 py-1 rounded-full ${
+											isProductIdentifier(fieldName)
+												? "bg-primary text-white"
+												: "bg-gray-100 text-gray-600 hover:bg-gray-200"
+										}`}
 									>
 										{isProductIdentifier(fieldName) ? "Product ID" : "Set as Product ID"}
 									</button>
@@ -1524,10 +1526,11 @@ function FieldsMappingStep({ formData, setFormData, isLoading, setIsLoading, set
 									<button
 										type="button"
 										onClick={() => handleSetArrayIdentifier(arrayField, fieldName)}
-										className={`text-xs px-2 py-1 rounded-full ${isArrayIdentifier(arrayField, fieldName)
-											? "bg-primary text-white"
-											: "bg-gray-100 text-gray-600 hover:bg-gray-200"
-											}`}
+										className={`text-xs px-2 py-1 rounded-full ${
+											isArrayIdentifier(arrayField, fieldName)
+												? "bg-primary text-white"
+												: "bg-gray-100 text-gray-600 hover:bg-gray-200"
+										}`}
 									>
 										{isArrayIdentifier(arrayField, fieldName) ? "Identifier" : "Set as Identifier"}
 									</button>
@@ -1813,8 +1816,30 @@ function DataEmbeddingStep({ formData, setFormData, isLoading, setIsLoading, set
 				}
 			}, 1000);
 
-			// Update fields
-			await sdkWizardService.updateData({ fields: formData.fields });
+			// Try to update the data first
+			try {
+				await sdkWizardService.updateData({
+					platform: formData.platform,
+					store_url: formData.store_url,
+					database_access: formData.database_access,
+					fields: formData.fields,
+					is_data_extracted: formData.isDataExtracted,
+				});
+			} catch (error) {
+				// If update fails with 404, create the data
+				if (error.response?.status === 404) {
+					await sdkWizardService.createData({
+						platform: formData.platform,
+						store_url: formData.store_url,
+						database_access: formData.database_access,
+						fields: formData.fields,
+						is_data_extracted: formData.isDataExtracted,
+					});
+				} else {
+					// If it's another error, rethrow it
+					throw error;
+				}
+			}
 
 			clearInterval(progressInterval);
 			setProgress(100);
@@ -2646,7 +2671,12 @@ function DocumentationUploadStep({ formData, setFormData }: StepProps) {
 						<div className="space-y-2">
 							{links.map((link) => (
 								<div key={link} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
-									<a href={link} target="_blank" rel="noopener noreferrer" className="text-sm text-primary hover:underline">
+									<a
+										href={link}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="text-sm text-primary hover:underline"
+									>
 										{link}
 									</a>
 									<button
@@ -2699,7 +2729,10 @@ function DocumentationUploadStep({ formData, setFormData }: StepProps) {
 					{formData.documentation?.files && formData.documentation.files.length > 0 && (
 						<div className="mt-4 space-y-2">
 							{formData.documentation.files.map((file) => (
-								<div key={`${file.name}-${file.size}`} className="flex items-center justify-between p-2 bg-gray-50 rounded-md">
+								<div
+									key={`${file.name}-${file.size}`}
+									className="flex items-center justify-between p-2 bg-gray-50 rounded-md"
+								>
 									<span className="text-sm text-gray-600">{file.name}</span>
 									<button
 										type="button"

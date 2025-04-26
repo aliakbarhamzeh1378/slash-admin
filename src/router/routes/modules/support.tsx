@@ -22,9 +22,9 @@ const SupportIndex = lazy(() => import("@/pages/support/index"));
 const FAQ = lazy(() => import("@/pages/support/faq"));
 const UserGuide = lazy(() => import("@/pages/support/guide"));
 const ContactSupport = lazy(() => import("@/pages/support/contact"));
+const TicketView = lazy(() => import("@/pages/support/tickets/view"));
 
 // Guide article components
-
 
 // const OrganizationPage = lazy(() => import("@/pages/support/system/organization"));
 // const PermissioPage = lazy(() => import("@/pages/support/system/permission"));
@@ -56,7 +56,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "sys.menu.support.index",
 				key: "/support/index",
-				icon: <Iconify icon="mdi:view-dashboard" className="ant-menu-item-icon" size="20" />
+				icon: <Iconify icon="mdi:view-dashboard" className="ant-menu-item-icon" size="20" />,
 			},
 		},
 		{
@@ -65,7 +65,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "sys.menu.support.faq",
 				key: "/support/faq",
-				icon: <Iconify icon="mdi:frequently-asked-questions" className="ant-menu-item-icon" size="20" />
+				icon: <Iconify icon="mdi:frequently-asked-questions" className="ant-menu-item-icon" size="20" />,
 			},
 		},
 		{
@@ -74,7 +74,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "sys.menu.support.guide",
 				key: "/support/guide",
-				icon: <Iconify icon="mdi:book-open-page-variant" className="ant-menu-item-icon" size="20" />
+				icon: <Iconify icon="mdi:book-open-page-variant" className="ant-menu-item-icon" size="20" />,
 			},
 		},
 		{
@@ -83,7 +83,16 @@ const support: AppRouteObject = {
 			meta: {
 				label: "sys.menu.support.contact",
 				key: "/support/contact",
-				icon: <Iconify icon="mdi:email" className="ant-menu-item-icon" size="20" />
+				icon: <Iconify icon="mdi:email" className="ant-menu-item-icon" size="20" />,
+			},
+		},
+		{
+			path: "tickets/:id",
+			element: <TicketView />,
+			meta: {
+				label: "Ticket Details",
+				key: "/support/tickets/:id",
+				hideMenu: true,
 			},
 		},
 		// Guide article routes
@@ -93,7 +102,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Platform Overview",
 				key: "/support/guide/overview",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -102,7 +111,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Account Setup",
 				key: "/support/guide/account-setup",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -111,7 +120,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "First Project",
 				key: "/support/guide/first-project",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -120,7 +129,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Team Roles",
 				key: "/support/guide/team-roles",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -129,7 +138,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Inviting Users",
 				key: "/support/guide/inviting-users",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -138,7 +147,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Access Control",
 				key: "/support/guide/access-control",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -147,7 +156,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Dashboard Overview",
 				key: "/support/guide/dashboard",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -156,7 +165,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Project Management",
 				key: "/support/guide/project-management",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -165,7 +174,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Reports & Analytics",
 				key: "/support/guide/reports",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -174,7 +183,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "API Documentation",
 				key: "/support/guide/api",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -183,7 +192,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Third-party Tools",
 				key: "/support/guide/integrations",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 		{
@@ -192,7 +201,7 @@ const support: AppRouteObject = {
 			meta: {
 				label: "Webhooks",
 				key: "/support/guide/webhooks",
-				hideMenu: true
+				hideMenu: true,
 			},
 		},
 	],

@@ -31,21 +31,21 @@ def init_db(db: Session) -> None:
             "name": "Free",
             "description": "Basic plan for individual users",
             "price": 0.0,
-            "features": ["Basic API access", "1GB storage", "1 team member"],
+            "features": ["Feature 1", "Feature 2", "Feature 3"],
             "is_active": True
         },
         {
             "name": "Pro",
             "description": "Professional plan for small teams",
             "price": 29.99,
-            "features": ["Advanced API access", "10GB storage", "5 team members", "Priority support"],
+            "features": ["Feature 1", "Feature 2", "Feature 3"],
             "is_active": True
         },
         {
             "name": "Enterprise",
             "description": "Enterprise plan for large organizations",
             "price": 99.99,
-            "features": ["Unlimited API access", "100GB storage", "Unlimited team members", "24/7 support", "Custom features"],
+            "features": ["Feature 1", "Feature 2", "Feature 3"],
             "is_active": True
         }
     ]

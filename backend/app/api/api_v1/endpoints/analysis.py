@@ -88,7 +88,7 @@ async def get_intent_query_trends(
     start, end = generate_date_range(start_date, end_date)
     
     # Sample intent categories
-    intent_categories = ["purchase", "information", "support", "comparison", "review"]
+    intent_categories = ["product deep dive", "product search", "product discovery", "question about store", "normal conversation"]
     
     trends = [
         {
